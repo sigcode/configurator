@@ -3,7 +3,7 @@
 @section('content')
 
   <div class="column">
-    <h2 class="ui teal image header">
+    <h2 class="ui grey image header">
       
       <div class="content">
        {{ __('Login') }}
@@ -43,12 +43,12 @@
             </label>
         </div>
     
-        <button type="submit" class="ui fluid large teal submit button">
+        <button type="submit" class="ui fluid large grey submit button">
             {{ __('Login') }}
         </button>
 
         @if (Route::has('password.request'))
-            <a class="btn btn-link" href="{{ route('password.request') }}">
+            <a class="btn btn-link grey" href="{{ route('password.request') }}">
                 {{ __('Forgot Your Password?') }}
             </a>
         @endif

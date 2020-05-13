@@ -15,6 +15,11 @@ class vhosts {
             that.startStopVhost(this, false);
         });
 
+        $(".deleteVhost").unbind();
+        $(".deleteVhost").on("click", function () {
+            that.deleteVhost(this);
+        });
+
         $(".restartApache").unbind();
         $(".restartApache").on("click", function () {
             that.restartApache();
@@ -58,13 +63,13 @@ class vhosts {
                         $('meta[name="csrf-token"]').attr("content")
                     );
                 }
-            },
+            }
         });
         $.ajax({
             url: "/vhosts/apachectl",
             method: "POST",
             data: { command: command },
-            dataType: "json",
+            dataType: "json"
         }).done(function (res) {
             $("#console").append("\n$: " + res);
         });
@@ -112,13 +117,13 @@ class vhosts {
                         $('meta[name="csrf-token"]').attr("content")
                     );
                 }
-            },
+            }
         });
         $.ajax({
             url: "/vhosts/variousAjax",
             method: "POST",
             data: { type: "rename", old: oldName, new: newName },
-            dataType: "json",
+            dataType: "json"
         }).done(function (res) {
             $("#console").append("\n$: " + res);
             $(iElement).removeClass("hideForce");
@@ -185,6 +190,30 @@ class vhosts {
         animateScroll(duration, this.someElement);
     }
 
+    deleteVhost(element: HTMLElement) {
+        const name = $(element).attr("data-name");
+        const that = this;
+        $.ajaxSetup({
+            beforeSend: function (xhr, type) {
+                if (!type.crossDomain) {
+                    xhr.setRequestHeader(
+                        "X-CSRF-Token",
+                        $('meta[name="csrf-token"]').attr("content")
+                    );
+                }
+            }
+        });
+        $.ajax({
+            url: "/vhosts/variousAjax",
+            method: "POST",
+            data: { type: "deleteVhost", name: name },
+            dataType: "json"
+        }).done(function (res) {
+            $("#console").append("\n$: " + res);
+            document.getElementById(name).remove();
+        });
+    }
+
     startStopVhost(element: HTMLElement, start: boolean) {
         const name = $(element).attr("data-name");
         const that = this;
@@ -197,13 +226,13 @@ class vhosts {
                         $('meta[name="csrf-token"]').attr("content")
                     );
                 }
-            },
+            }
         });
         $.ajax({
             url: "/vhosts/startStopVhost",
             method: "POST",
             data: { name: name, type: start },
-            dataType: "json",
+            dataType: "json"
         })
             .done(function (res) {
                 if (res.substring(0, 13) == "Enabling site") {

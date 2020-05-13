@@ -125,6 +125,10 @@ function () {
     $(".stopVhost").on("click", function () {
       that.startStopVhost(this, false);
     });
+    $(".deleteVhost").unbind();
+    $(".deleteVhost").on("click", function () {
+      that.deleteVhost(this);
+    });
     $(".restartApache").unbind();
     $(".restartApache").on("click", function () {
       that.restartApache();
@@ -291,6 +295,30 @@ function () {
     var duration = 300; // Or however many milliseconds you want to scroll to last
 
     animateScroll(duration, this.someElement);
+  };
+
+  vhosts.prototype.deleteVhost = function (element) {
+    var name = $(element).attr("data-name");
+    var that = this;
+    $.ajaxSetup({
+      beforeSend: function beforeSend(xhr, type) {
+        if (!type.crossDomain) {
+          xhr.setRequestHeader("X-CSRF-Token", $('meta[name="csrf-token"]').attr("content"));
+        }
+      }
+    });
+    $.ajax({
+      url: "/vhosts/variousAjax",
+      method: "POST",
+      data: {
+        type: "deleteVhost",
+        name: name
+      },
+      dataType: "json"
+    }).done(function (res) {
+      $("#console").append("\n$: " + res);
+      document.getElementById(name).remove();
+    });
   };
 
   vhosts.prototype.startStopVhost = function (element, start) {

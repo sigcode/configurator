@@ -3,7 +3,7 @@
 
 
 <div class="ui inverted menu">
-  <div class="header item">Confer</div>
+  <div class="header item">Codesrv - Conf</div>
   
   <div class="right menu">
     <div class="item">

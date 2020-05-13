@@ -101,6 +101,9 @@ class VhostcliController extends Controller
             case "rename":
                 return json_encode($this->renameVhost());
             break;
+            case "deleteVhost":
+                return json_encode($this->deleteVhost());
+            break;
             default;
             break;
         }
@@ -119,6 +122,21 @@ class VhostcliController extends Controller
        
         return "Rename done. ". $out;
     }
+
+    private function deleteVhost()
+    {
+        $name = request()->name;
+        
+        if ($name == "") {
+            $out = "Fail - something shitty happend?!";
+        } else {
+            $cmd = "sudo rm /etc/apache2/sites-available/".$name." 2>&1";
+            $out = shell_exec($cmd);
+        }
+       
+        return "Delete done. ". $out;
+    }
+
 
     public function update(String $param)
     {

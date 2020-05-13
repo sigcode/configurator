@@ -8,7 +8,7 @@
              Dashboard
             
         </a>
-        <a href="/vhosts" class="black item {{ Request::path() === "vhosts" ? "active" : "" }}">
+        <a href="/vhosts" class="teal item {{ Request::path() === "vhosts" ? "active" : "" }}">
             Vhosts
         
         </a>

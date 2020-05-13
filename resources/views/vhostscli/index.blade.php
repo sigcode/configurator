@@ -5,21 +5,26 @@
         <h1>VHosts available</h1>
         <div class="ui celled list">
             @forelse ($realVhosts as $key => $vhost ) @foreach ($vhost as $name => $content)
-            <div class="item">
+            <div class="item" id="{{$name}}">
                 <div class="ui two column grid">
                     <div class="four wide column">
                         <div class="middle aligned content">
                             <div class="vhostStatusLabel ui {{ in_array($name, $enabled) ? " green ": "red " }}  label">{{ in_array($name, $enabled) ? "Active": "Inactive" }}</div>
                         </div>
                     </div>
-                    <div class="eight wide column">
+                    <div class="ten wide column">
                         <div class="content">
                             <div class="ui large header">
                                 <span class="headerName">{{$name}}</span><i class="pencil icon grey editPencilVHost" style=""></i>
                             </div>
                             <div class="meta">
                                 <a href="{{ route('vhosts.edit' , ["vhost" => $name])}}"><span class="ui label">Edit</span></a>
-
+                                @if (!in_array($name, $enabled)) 
+                                    <span data-name="{{$name}}" class="ui label deleteVhost">
+                                            <i class="minus circle icon"></i> 
+                                                delete
+                                    </span>
+                                @endif
                                 <span data-name="{{$name}}" class="ui label {{ in_array($name, $enabled) ? " stop": "start" }}Vhost">
                                             <i class="{{ in_array($name, $enabled) ? "stop": "play" }} icon"></i> 
                                                 {{ in_array($name, $enabled) ? "deactivate": "activate" }}

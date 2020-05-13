@@ -12,6 +12,10 @@ var vhosts = /** @class */ (function () {
         $(".stopVhost").on("click", function () {
             that.startStopVhost(this, false);
         });
+        $(".deleteVhost").unbind();
+        $(".deleteVhost").on("click", function () {
+            that.deleteVhost(this);
+        });
         $(".restartApache").unbind();
         $(".restartApache").on("click", function () {
             that.restartApache();
@@ -46,13 +50,13 @@ var vhosts = /** @class */ (function () {
                 if (!type.crossDomain) {
                     xhr.setRequestHeader("X-CSRF-Token", $('meta[name="csrf-token"]').attr("content"));
                 }
-            },
+            }
         });
         $.ajax({
             url: "/vhosts/apachectl",
             method: "POST",
             data: { command: command },
-            dataType: "json",
+            dataType: "json"
         }).done(function (res) {
             $("#console").append("\n$: " + res);
         });
@@ -89,13 +93,13 @@ var vhosts = /** @class */ (function () {
                 if (!type.crossDomain) {
                     xhr.setRequestHeader("X-CSRF-Token", $('meta[name="csrf-token"]').attr("content"));
                 }
-            },
+            }
         });
         $.ajax({
             url: "/vhosts/variousAjax",
             method: "POST",
             data: { type: "rename", old: oldName, new: newName },
-            dataType: "json",
+            dataType: "json"
         }).done(function (res) {
             $("#console").append("\n$: " + res);
             $(iElement).removeClass("hideForce");
@@ -154,6 +158,26 @@ var vhosts = /** @class */ (function () {
         var duration = 300; // Or however many milliseconds you want to scroll to last
         animateScroll(duration, this.someElement);
     };
+    vhosts.prototype.deleteVhost = function (element) {
+        var name = $(element).attr("data-name");
+        var that = this;
+        $.ajaxSetup({
+            beforeSend: function (xhr, type) {
+                if (!type.crossDomain) {
+                    xhr.setRequestHeader("X-CSRF-Token", $('meta[name="csrf-token"]').attr("content"));
+                }
+            }
+        });
+        $.ajax({
+            url: "/vhosts/variousAjax",
+            method: "POST",
+            data: { type: "deleteVhost", name: name },
+            dataType: "json"
+        }).done(function (res) {
+            $("#console").append("\n$: " + res);
+            document.getElementById(name).remove();
+        });
+    };
     vhosts.prototype.startStopVhost = function (element, start) {
         var name = $(element).attr("data-name");
         var that = this;
@@ -163,13 +187,13 @@ var vhosts = /** @class */ (function () {
                 if (!type.crossDomain) {
                     xhr.setRequestHeader("X-CSRF-Token", $('meta[name="csrf-token"]').attr("content"));
                 }
-            },
+            }
         });
         $.ajax({
             url: "/vhosts/startStopVhost",
             method: "POST",
             data: { name: name, type: start },
-            dataType: "json",
+            dataType: "json"
         })
             .done(function (res) {
             if (res.substring(0, 13) == "Enabling site") {
