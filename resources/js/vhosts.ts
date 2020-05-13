@@ -20,6 +20,16 @@ class vhosts {
             that.deleteVhost(this);
         });
 
+        $(".newVhost").unbind();
+        $(".newVhost").on("click", function () {
+            that.newVhost();
+        });
+
+        $(".submitNewVhost").unbind();
+        $(".submitNewVhost").on("click", function () {
+            that.newVhostSubmit();
+        });
+
         $(".restartApache").unbind();
         $(".restartApache").on("click", function () {
             that.restartApache();
@@ -188,6 +198,42 @@ class vhosts {
         this.someElement.scrollTop = this.someElement.scrollHeight;
         var duration = 300; // Or however many milliseconds you want to scroll to last
         animateScroll(duration, this.someElement);
+    }
+
+    newVhost() {
+        $(".ui.modal").modal("show");
+    }
+
+    newVhostSubmit() {
+        const name: string = <string>(<unknown>$(".newVhostName").val());
+        const valid: boolean = /\.(conf)$/i.test(name);
+        if (valid) {
+            $.ajaxSetup({
+                beforeSend: function (xhr, type) {
+                    if (!type.crossDomain) {
+                        xhr.setRequestHeader(
+                            "X-CSRF-Token",
+                            $('meta[name="csrf-token"]').attr("content")
+                        );
+                    }
+                }
+            });
+            $.ajax({
+                url: "/vhosts/variousAjax",
+                method: "POST",
+                data: { type: "addVhost", name: name },
+                dataType: "json"
+            }).done(function (res) {
+                $("#console").append("\n$: " + res);
+                $(".ui.modal").modal("hide");
+                location.reload();
+            });
+        } else {
+            $(".fileendingIncorrect").transition("scale");
+            $(".fileendingIncorrect").on("click", function () {
+                $(".fileendingIncorrect").transition("scale");
+            });
+        }
     }
 
     deleteVhost(element: HTMLElement) {

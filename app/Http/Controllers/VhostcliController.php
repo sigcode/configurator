@@ -104,6 +104,9 @@ class VhostcliController extends Controller
             case "deleteVhost":
                 return json_encode($this->deleteVhost());
             break;
+            case "addVhost":
+                return json_encode($this->addVhost());
+            break;
             default;
             break;
         }
@@ -135,6 +138,20 @@ class VhostcliController extends Controller
         }
        
         return "Delete done. ". $out;
+    }
+
+    private function addVhost()
+    {
+        $name = request()->name;
+        
+        if ($name == "") {
+            $out = "Fail - something shitty happend?!";
+        } else {
+            $cmd = "sudo touch /etc/apache2/sites-available/".$name." 2>&1";
+            $out = shell_exec($cmd);
+        }
+       
+        return "Create done. ". $out;
     }
 
 

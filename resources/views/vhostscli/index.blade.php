@@ -2,7 +2,7 @@
 <div class="ui two column grid">
     <div class="six wide column">
         <meta name="csrf-token" content="{{ csrf_token() }}">
-        <h1>VHosts available</h1>
+        <h1>VHosts available <span class="newVhost"><i class="plus green circle icon"></i></span></h1>
         <div class="ui celled list">
             @forelse ($realVhosts as $key => $vhost ) @foreach ($vhost as $name => $content)
             <div class="item" id="{{$name}}">
@@ -18,10 +18,10 @@
                                 <span class="headerName">{{$name}}</span><i class="pencil icon grey editPencilVHost" style=""></i>
                             </div>
                             <div class="meta">
-                                <a href="{{ route('vhosts.edit' , ["vhost" => $name])}}"><span class="ui label">Edit</span></a>
+                                <a href="{{ route('vhosts.edit' , ["vhost" => $name])}}"><span class="ui blue label">Edit</span></a>
                                 @if (!in_array($name, $enabled)) 
-                                    <span data-name="{{$name}}" class="ui label deleteVhost">
-                                            <i class="minus circle icon"></i> 
+                                    <span  data-name="{{$name}}" class="ui label red deleteVhost">
+                                            <i class="minus white circle icon"></i> 
                                                 delete
                                     </span>
                                 @endif
@@ -61,5 +61,25 @@
             </pre>
         </div>
     </div>
+</div>
+
+<div class="ui modal">
+  <i class="close icon"></i>
+  <div class="header">
+    New Vhost
+  </div>
+  <div class="image content">
+  <div class="ui input">
+    <input type="text" class="newVhostName" placeholder="example.conf"/>
+  </div>
+    <div class="ui left pointing red basic label fileendingIncorrect hidden">
+          Invalid Vhost Config Fileending. Trottel!
+        </div>
+        
+  </div>
+  <div class="actions">
+    <div class="ui red button">Cancel</div>
+    <div class="ui green button submitNewVhost">OK</div>
+  </div>
 </div>
 @endsection
