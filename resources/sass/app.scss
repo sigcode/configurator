@@ -17,6 +17,18 @@
     cursor: pointer;
 }
 
+.importantInfo {
+    width: 200px;
+
+    margin: auto;
+}
+
+.gimmeShadow {
+    -webkit-box-shadow: 17px 18px 21px 12px rgba(50, 50, 50, 0.96);
+    -moz-box-shadow: 17px 18px 21px 12px rgba(50, 50, 50, 0.96);
+    box-shadow: 17px 18px 21px 12px rgba(50, 50, 50, 0.96);
+}
+
 #consoleWrapper {
     min-width: 600px;
     height: 500px;

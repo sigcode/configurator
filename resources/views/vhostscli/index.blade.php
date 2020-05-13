@@ -2,6 +2,14 @@
 <div class="ui two column grid">
     <div class="six wide column">
         <meta name="csrf-token" content="{{ csrf_token() }}">
+        <div class="ui two column grid">
+            <div class="three wide column"></div>
+            <div class="four wide column">
+                <div class="">
+                    <img  class="importantInfo gimmeShadow" src="/images/you-broke-it-you-fix-it.png"/>
+                </div>
+            </div>
+        </div>
         <h1>VHosts available <span class="newVhost"><i class="plus green circle icon"></i></span></h1>
         <div class="ui celled list">
             @forelse ($realVhosts as $key => $vhost ) @foreach ($vhost as $name => $content)
