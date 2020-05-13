@@ -5,63 +5,105 @@ var vhosts = /** @class */ (function () {
     }
     vhosts.prototype.appendState = function () {
         if (document.getElementById("dashboard") !== null) {
-            var name_1 = "apache2";
-            $.ajaxSetup({
-                beforeSend: function (xhr, type) {
-                    if (!type.crossDomain) {
-                        xhr.setRequestHeader("X-CSRF-Token", $('meta[name="csrf-token"]').attr("content"));
-                    }
-                }
-            });
-            $.ajax({
-                url: "/vhosts/variousAjax",
-                method: "POST",
-                data: { type: "getServiceState", name: name_1 },
-                dataType: "json"
-            }).done(function (res) {
-                $(".leftDashboard").append(res);
-                if (res.match(/Active: active \(running\)/g)) {
-                    $(".apacheState").find("i").addClass("green");
-                    $(".apacheState").find("i").addClass("play");
-                    $(".apacheState").find("i").removeClass("red");
-                    $(".apacheState").find("i").removeClass("stop");
-                }
-                else {
-                    $(".apacheState").find("i").removeClass("green");
-                    $(".apacheState").find("i").removeClass("play");
-                    $(".apacheState").find("i").addClass("red");
-                    $(".apacheState").find("i").addClass("stop");
-                }
-            });
-            var name2 = "codeserver3";
-            $.ajaxSetup({
-                beforeSend: function (xhr, type) {
-                    if (!type.crossDomain) {
-                        xhr.setRequestHeader("X-CSRF-Token", $('meta[name="csrf-token"]').attr("content"));
-                    }
-                }
-            });
-            $.ajax({
-                url: "/vhosts/variousAjax",
-                method: "POST",
-                data: { type: "getServiceState", name: name2 },
-                dataType: "json"
-            }).done(function (res) {
-                $(".rightDashboard").append(res);
-                if (res.match(/Active: active \(running\)/g)) {
-                    $(".codeserverState").find("i").addClass("green");
-                    $(".codeserverState").find("i").addClass("play");
-                    $(".codeserverState").find("i").removeClass("red");
-                    $(".codeserverState").find("i").removeClass("stop");
-                }
-                else {
-                    $(".codeserverState").find("i").removeClass("green");
-                    $(".codeserverState").find("i").removeClass("play");
-                    $(".codeserverState").find("i").addClass("red");
-                    $(".codeserverState").find("i").addClass("stop");
-                }
-            });
+            this.getStatus("apacheState", "leftDashboard", "apache2");
+            this.getStatus("codeserverState", "rightDashboard", "codeserver3");
+            this.getStatus("mysqlState", "leftDashboardSecond", "mysql");
+            this.getStatus("confState", "rightDashboardSecond", "confer");
         }
+    };
+    vhosts.prototype.codeserverRestart = function () {
+        this.serviceCommand("codeserver3", "restart", "codeserverState", "rightDashboard");
+    };
+    vhosts.prototype.codeserverStart = function () {
+        this.serviceCommand("codeserver3", "start", "codeserverState", "rightDashboard");
+    };
+    vhosts.prototype.codeserverStop = function () {
+        this.serviceCommand("codeserver3", "stop", "codeserverState", "rightDashboard");
+    };
+    vhosts.prototype.apacheRestart = function () {
+        this.serviceCommand("apache2", "restart", "apacheState", "leftDashboard");
+    };
+    vhosts.prototype.apacheStart = function () {
+        this.serviceCommand("apache2", "start", "apacheState", "leftDashboard");
+    };
+    vhosts.prototype.apacheStop = function () {
+        this.serviceCommand("apache2", "stop", "apacheState", "leftDashboard");
+    };
+    vhosts.prototype.mysqlRestart = function () {
+        this.serviceCommand("mysql", "restart", "mysqlState", "leftDashboardSecond");
+    };
+    vhosts.prototype.mysqlStart = function () {
+        this.serviceCommand("mysql", "start", "mysqlState", "leftDashboardSecond");
+    };
+    vhosts.prototype.mysqlStop = function () {
+        this.serviceCommand("mysql", "stop", "mysqlState", "leftDashboardSecond");
+    };
+    vhosts.prototype.confAll = function () {
+        $(".ui.modal").modal("show");
+    };
+    vhosts.prototype.serviceCommand = function (service, command, statusSpan, contentdiv) {
+        var that = this;
+        $.ajaxSetup({
+            beforeSend: function (xhr, type) {
+                if (!type.crossDomain) {
+                    xhr.setRequestHeader("X-CSRF-Token", $('meta[name="csrf-token"]').attr("content"));
+                }
+            }
+        });
+        $.ajax({
+            url: "/vhosts/variousAjax",
+            method: "POST",
+            data: { type: "serviceCommand", name: service, command: command },
+            dataType: "json"
+        }).done(function (res) {
+            that.getStatus(statusSpan, contentdiv, service);
+        });
+    };
+    vhosts.prototype.getStatus = function (statusSpan, contentdiv, servicename) {
+        $.ajaxSetup({
+            beforeSend: function (xhr, type) {
+                if (!type.crossDomain) {
+                    xhr.setRequestHeader("X-CSRF-Token", $('meta[name="csrf-token"]').attr("content"));
+                }
+            }
+        });
+        $.ajax({
+            url: "/vhosts/variousAjax",
+            method: "POST",
+            data: { type: "getServiceState", name: servicename },
+            dataType: "json"
+        }).done(function (res) {
+            $("." + contentdiv).empty();
+            $("." + contentdiv).append(res);
+            if (res.match(/Active: active \(running\)/g)) {
+                $("." + statusSpan)
+                    .find("i")
+                    .addClass("green");
+                $("." + statusSpan)
+                    .find("i")
+                    .addClass("play");
+                $("." + statusSpan)
+                    .find("i")
+                    .removeClass("red");
+                $("." + statusSpan)
+                    .find("i")
+                    .removeClass("stop");
+            }
+            else {
+                $("." + statusSpan)
+                    .find("i")
+                    .removeClass("green");
+                $("." + statusSpan)
+                    .find("i")
+                    .removeClass("play");
+                $("." + statusSpan)
+                    .find("i")
+                    .addClass("red");
+                $("." + statusSpan)
+                    .find("i")
+                    .addClass("stop");
+            }
+        });
     };
     vhosts.prototype.startListeners = function () {
         var that = this;

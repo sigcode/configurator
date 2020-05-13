@@ -110,9 +110,26 @@ class VhostcliController extends Controller
             case "getServiceState":
                 return json_encode($this->getServiceState());
             break;
+            case "serviceCommand":
+                return json_encode($this->serviceCommand());
+            break;
             default;
             break;
         }
+    }
+
+    private function serviceCommand()
+    {
+        $name = request()->name;
+        $command = request()->command;
+        
+        if ($name == "") {
+            $out = "Fail - something shitty happend?!";
+        } else {
+            $cmd = "sudo service ".$name." ".$command." 2>&1";
+            $out = shell_exec($cmd);
+        }
+        return $out;
     }
 
     private function getServiceState()
@@ -125,7 +142,6 @@ class VhostcliController extends Controller
             $cmd = "sudo service ".$name." status 2>&1";
             $out = shell_exec($cmd);
         }
-       
         return $out;
     }
 

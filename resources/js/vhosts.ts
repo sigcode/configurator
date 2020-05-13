@@ -7,67 +7,160 @@ class vhosts {
 
     appendState() {
         if (document.getElementById("dashboard") !== null) {
-            const name = "apache2";
-            $.ajaxSetup({
-                beforeSend: function (xhr, type) {
-                    if (!type.crossDomain) {
-                        xhr.setRequestHeader(
-                            "X-CSRF-Token",
-                            $('meta[name="csrf-token"]').attr("content")
-                        );
-                    }
-                }
-            });
-            $.ajax({
-                url: "/vhosts/variousAjax",
-                method: "POST",
-                data: { type: "getServiceState", name: name },
-                dataType: "json"
-            }).done(function (res) {
-                $(".leftDashboard").append(res);
-                if (res.match(/Active: active \(running\)/g)) {
-                    $(".apacheState").find("i").addClass("green");
-                    $(".apacheState").find("i").addClass("play");
-                    $(".apacheState").find("i").removeClass("red");
-                    $(".apacheState").find("i").removeClass("stop");
-                } else {
-                    $(".apacheState").find("i").removeClass("green");
-                    $(".apacheState").find("i").removeClass("play");
-                    $(".apacheState").find("i").addClass("red");
-                    $(".apacheState").find("i").addClass("stop");
-                }
-            });
-            const name2 = "codeserver3";
-            $.ajaxSetup({
-                beforeSend: function (xhr, type) {
-                    if (!type.crossDomain) {
-                        xhr.setRequestHeader(
-                            "X-CSRF-Token",
-                            $('meta[name="csrf-token"]').attr("content")
-                        );
-                    }
-                }
-            });
-            $.ajax({
-                url: "/vhosts/variousAjax",
-                method: "POST",
-                data: { type: "getServiceState", name: name2 },
-                dataType: "json"
-            }).done(function (res) {
-                $(".rightDashboard").append(res);
-                if (res.match(/Active: active \(running\)/g)) {
-                    $(".codeserverState").find("i").addClass("green");
-                    $(".codeserverState").find("i").addClass("play");
-                    $(".codeserverState").find("i").removeClass("red");
-                    $(".codeserverState").find("i").removeClass("stop");
-                } else {
-                    $(".codeserverState").find("i").removeClass("green");
-                    $(".codeserverState").find("i").removeClass("play");
-                    $(".codeserverState").find("i").addClass("red");
-                    $(".codeserverState").find("i").addClass("stop");
-                }
-            });
+            this.getStatus("apacheState", "leftDashboard", "apache2");
+            this.getStatus("codeserverState", "rightDashboard", "codeserver3");
+            this.getStatus("mysqlState", "leftDashboardSecond", "mysql");
+            this.getStatus("confState", "rightDashboardSecond", "confer");
         }
+    }
+    codeserverRestart() {
+        this.serviceCommand(
+            "codeserver3",
+            "restart",
+            "codeserverState",
+            "rightDashboard"
+        );
+    }
+
+    codeserverStart() {
+        this.serviceCommand(
+            "codeserver3",
+            "start",
+            "codeserverState",
+            "rightDashboard"
+        );
+    }
+
+    codeserverStop() {
+        this.serviceCommand(
+            "codeserver3",
+            "stop",
+            "codeserverState",
+            "rightDashboard"
+        );
+    }
+
+    apacheRestart() {
+        this.serviceCommand(
+            "apache2",
+            "restart",
+            "apacheState",
+            "leftDashboard"
+        );
+    }
+
+    apacheStart() {
+        this.serviceCommand("apache2", "start", "apacheState", "leftDashboard");
+    }
+
+    apacheStop() {
+        this.serviceCommand("apache2", "stop", "apacheState", "leftDashboard");
+    }
+    mysqlRestart() {
+        this.serviceCommand(
+            "mysql",
+            "restart",
+            "mysqlState",
+            "leftDashboardSecond"
+        );
+    }
+
+    mysqlStart() {
+        this.serviceCommand(
+            "mysql",
+            "start",
+            "mysqlState",
+            "leftDashboardSecond"
+        );
+    }
+
+    mysqlStop() {
+        this.serviceCommand(
+            "mysql",
+            "stop",
+            "mysqlState",
+            "leftDashboardSecond"
+        );
+    }
+
+    confAll() {
+        $(".ui.modal").modal("show");
+    }
+
+    serviceCommand(
+        service: string,
+        command: string,
+        statusSpan: string,
+        contentdiv: string
+    ) {
+        const that = this;
+        $.ajaxSetup({
+            beforeSend: function (xhr, type) {
+                if (!type.crossDomain) {
+                    xhr.setRequestHeader(
+                        "X-CSRF-Token",
+                        $('meta[name="csrf-token"]').attr("content")
+                    );
+                }
+            }
+        });
+        $.ajax({
+            url: "/vhosts/variousAjax",
+            method: "POST",
+            data: { type: "serviceCommand", name: service, command: command },
+            dataType: "json"
+        }).done(function (res) {
+            that.getStatus(statusSpan, contentdiv, service);
+        });
+    }
+
+    getStatus(statusSpan: string, contentdiv: string, servicename: string) {
+        $.ajaxSetup({
+            beforeSend: function (xhr, type) {
+                if (!type.crossDomain) {
+                    xhr.setRequestHeader(
+                        "X-CSRF-Token",
+                        $('meta[name="csrf-token"]').attr("content")
+                    );
+                }
+            }
+        });
+        $.ajax({
+            url: "/vhosts/variousAjax",
+            method: "POST",
+            data: { type: "getServiceState", name: servicename },
+            dataType: "json"
+        }).done(function (res) {
+            $("." + contentdiv).empty();
+            $("." + contentdiv).append(res);
+            if (res.match(/Active: active \(running\)/g)) {
+                $("." + statusSpan)
+                    .find("i")
+                    .addClass("green");
+                $("." + statusSpan)
+                    .find("i")
+                    .addClass("play");
+                $("." + statusSpan)
+                    .find("i")
+                    .removeClass("red");
+                $("." + statusSpan)
+                    .find("i")
+                    .removeClass("stop");
+            } else {
+                $("." + statusSpan)
+                    .find("i")
+                    .removeClass("green");
+                $("." + statusSpan)
+                    .find("i")
+                    .removeClass("play");
+                $("." + statusSpan)
+                    .find("i")
+                    .addClass("red");
+                $("." + statusSpan)
+                    .find("i")
+                    .addClass("stop");
+            }
+        });
     }
 
     startListeners() {
