@@ -107,9 +107,26 @@ class VhostcliController extends Controller
             case "addVhost":
                 return json_encode($this->addVhost());
             break;
+            case "getServiceState":
+                return json_encode($this->getServiceState());
+            break;
             default;
             break;
         }
+    }
+
+    private function getServiceState()
+    {
+        $name = request()->name;
+        
+        if ($name == "") {
+            $out = "Fail - something shitty happend?!";
+        } else {
+            $cmd = "sudo service ".$name." status 2>&1";
+            $out = shell_exec($cmd);
+        }
+       
+        return $out;
     }
 
     private function renameVhost()
@@ -122,7 +139,6 @@ class VhostcliController extends Controller
             $cmd = "sudo mv /etc/apache2/sites-available/".$old." /etc/apache2/sites-available/".$new. " 2>&1";
             $out = shell_exec($cmd);
         }
-       
         return "Rename done. ". $out;
     }
 

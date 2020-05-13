@@ -2,6 +2,72 @@ class vhosts {
     someElement: any;
     constructor() {
         this.startListeners();
+        this.appendState();
+    }
+
+    appendState() {
+        if (document.getElementById("dashboard") !== null) {
+            const name = "apache2";
+            $.ajaxSetup({
+                beforeSend: function (xhr, type) {
+                    if (!type.crossDomain) {
+                        xhr.setRequestHeader(
+                            "X-CSRF-Token",
+                            $('meta[name="csrf-token"]').attr("content")
+                        );
+                    }
+                }
+            });
+            $.ajax({
+                url: "/vhosts/variousAjax",
+                method: "POST",
+                data: { type: "getServiceState", name: name },
+                dataType: "json"
+            }).done(function (res) {
+                $(".leftDashboard").append(res);
+                if (res.match(/Active: active \(running\)/g)) {
+                    $(".apacheState").find("i").addClass("green");
+                    $(".apacheState").find("i").addClass("play");
+                    $(".apacheState").find("i").removeClass("red");
+                    $(".apacheState").find("i").removeClass("stop");
+                } else {
+                    $(".apacheState").find("i").removeClass("green");
+                    $(".apacheState").find("i").removeClass("play");
+                    $(".apacheState").find("i").addClass("red");
+                    $(".apacheState").find("i").addClass("stop");
+                }
+            });
+            const name2 = "codeserver3";
+            $.ajaxSetup({
+                beforeSend: function (xhr, type) {
+                    if (!type.crossDomain) {
+                        xhr.setRequestHeader(
+                            "X-CSRF-Token",
+                            $('meta[name="csrf-token"]').attr("content")
+                        );
+                    }
+                }
+            });
+            $.ajax({
+                url: "/vhosts/variousAjax",
+                method: "POST",
+                data: { type: "getServiceState", name: name2 },
+                dataType: "json"
+            }).done(function (res) {
+                $(".rightDashboard").append(res);
+                if (res.match(/Active: active \(running\)/g)) {
+                    $(".codeserverState").find("i").addClass("green");
+                    $(".codeserverState").find("i").addClass("play");
+                    $(".codeserverState").find("i").removeClass("red");
+                    $(".codeserverState").find("i").removeClass("stop");
+                } else {
+                    $(".codeserverState").find("i").removeClass("green");
+                    $(".codeserverState").find("i").removeClass("play");
+                    $(".codeserverState").find("i").addClass("red");
+                    $(".codeserverState").find("i").addClass("stop");
+                }
+            });
+        }
     }
 
     startListeners() {
@@ -61,7 +127,9 @@ class vhosts {
         let observer = new MutationObserver(this.scrollToBottom);
         // Tell it to look for new children that will change the height.
         let config = { childList: true };
-        observer.observe(this.someElement, config);
+        if (document.getElementById("console") !== null) {
+            observer.observe(this.someElement, config);
+        }
     }
 
     commandApachectl(command: string) {

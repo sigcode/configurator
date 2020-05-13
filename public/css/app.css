@@ -15,6 +15,12 @@
   cursor: pointer;
 }
 
+.preWrapped {
+  white-space: pre-wrap;
+  height: 400px;
+  overflow-y: scroll;
+}
+
 .importantInfo {
   width: 200px;
   margin: auto;
