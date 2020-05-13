@@ -1,0 +1,46 @@
+.list-group-item.active {
+  background-color: #858d89;
+  border-color: #858d89;
+}
+
+.vhostStatusLabel {
+  margin: 15px 0 0 30px !important;
+}
+
+.startVhost,
+.stopVhost {
+  cursor: pointer;
+}
+
+#consoleWrapper {
+  min-width: 600px;
+  height: 500px;
+  margin-top: 50px;
+}
+
+#console {
+  overflow-y: scroll;
+  height: 450px;
+  background-color: #4a4a4a;
+  border-radius: 5px;
+  padding: 5px;
+  margin-top: 12px;
+  width: 100%;
+}
+
+.editPencilVHost {
+  top: -12px;
+  left: 7px;
+  position: relative !important;
+  font-size: 10px !important;
+  display: inline !important;
+}
+
+.appendedTextInput {
+  width: 190px;
+}
+
+.hideForce {
+  display: none !important;
+}
+
