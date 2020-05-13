@@ -51,7 +51,7 @@
     ...
   </div>
   <div class="image content">
-    <img src="/images/facepalm.jpeg" style="width: 600px;">
+    <img src="/images/ohno.gif" style="width: 600px;" class="gimmeShadow">
         
   </div>
   <div class="actions">
