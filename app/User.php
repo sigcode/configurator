@@ -37,14 +37,5 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
-    public function vhosts() 
-    {
-        return $this->hasMany(Vhosts::class);
-    }
-
-    public function codeservers()
-    {   
-        return $this->hasMany(Codeserver::class);
-
-    }
+  
 }
