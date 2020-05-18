@@ -1,8 +1,9 @@
 @extends('layout.master')
 
 @section('content')
-
-  <div class="column">
+<div class="ui three column grid">
+<div class="four wide column"></div>
+  <div class="five wide column">
     <h2 class="ui grey image header">
       
       <div class="content">
@@ -57,7 +58,7 @@
 
     </form>
 
-  
+  </div>
   </div>
 
 

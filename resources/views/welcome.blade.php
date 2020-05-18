@@ -1,7 +1,7 @@
 @extends('layout.master')
 
 @section('content')
-    
+    @auth
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <div class="ui two column grid" id="dashboard">
         <div class="7 wide column" style="">
@@ -43,7 +43,10 @@
             <div class="rightDashboardSecond preWrapped ui segment tertiary raised"></div>
         </div>
     </div>
-
+    @endauth
+    @guest
+        Please log in .... <a href="/login"> Go Go Go</a>
+    @endguest
 
 <div class="ui modal">
   <i class="close icon"></i>

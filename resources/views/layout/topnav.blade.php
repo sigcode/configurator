@@ -3,15 +3,10 @@
 
 
 <div class="ui inverted menu">
-  <div class="header item">Codesrv - Conf</div>
+  <div class="header item"><a href="/">Codesrv - Conf</a></div>
   
   <div class="right menu">
-    <div class="item">
-      <div class="ui transparent inverted icon input">
-        <i class="search icon"></i>
-        <input type="text" placeholder="Search">
-      </div>
-    </div>
+    
     
       @guest
         

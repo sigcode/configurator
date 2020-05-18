@@ -1,5 +1,6 @@
+ @auth
 <div class="ui vertical menu">
-        @auth
+       
             
         
         
@@ -13,5 +14,7 @@
         
         </a>
         
-        @endauth
+        
 </div>
+
+@endauth
