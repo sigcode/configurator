@@ -110,9 +110,18 @@ class VhostcliController extends Controller
             case "serviceCommand":
                 return json_encode($this->serviceCommand());
                 break;
+            case "changePHPVersion":
+                return json_encode($this->changePHPVersion());
+                break;
             default:
                 break;
         }
+    }
+
+    private function changePHPVersion()
+    {
+        $version = request()->version;
+        return "marvin for this version change to PHP $version i need that fuckin' command :D ";
     }
 
     private function serviceCommand()

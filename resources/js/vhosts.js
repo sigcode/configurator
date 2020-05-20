@@ -147,6 +147,10 @@ var vhosts = /** @class */ (function () {
         $(".editPencilVHost").on("click", function () {
             that.initRenameVhost(this);
         });
+        $(".cbphp").unbind();
+        $(".cbphp").on("click", function () {
+            that.initPHPVersionChange(this);
+        });
         // Get a reference to the div you want to auto-scroll.
         this.someElement = document.querySelector("#console");
         // Create an observer and pass it a callback.
@@ -156,6 +160,30 @@ var vhosts = /** @class */ (function () {
         if (document.getElementById("console") !== null) {
             observer.observe(this.someElement, config);
         }
+    };
+    vhosts.prototype.initPHPVersionChange = function (element) {
+        var selectedVersion = $(element).attr("data-php-version");
+        $(".cbphp").each(function () {
+            var genericVersion = $(this).attr("data-php-version");
+            if (genericVersion != selectedVersion) {
+                $(this).prop("checked", false);
+            }
+        });
+        $.ajaxSetup({
+            beforeSend: function (xhr, type) {
+                if (!type.crossDomain) {
+                    xhr.setRequestHeader("X-CSRF-Token", $('meta[name="csrf-token"]').attr("content"));
+                }
+            }
+        });
+        $.ajax({
+            url: "/vhosts/variousAjax",
+            method: "POST",
+            data: { type: "changePHPVersion", version: selectedVersion },
+            dataType: "json"
+        }).done(function (res) {
+            $("#console").append("\n$: " + res);
+        });
     };
     vhosts.prototype.commandApachectl = function (command) {
         $.ajaxSetup({

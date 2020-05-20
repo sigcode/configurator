@@ -214,6 +214,11 @@ class vhosts {
             that.initRenameVhost(this);
         });
 
+        $(".cbphp").unbind();
+        $(".cbphp").on("click", function () {
+            that.initPHPVersionChange(this);
+        });
+
         // Get a reference to the div you want to auto-scroll.
         this.someElement = document.querySelector("#console");
         // Create an observer and pass it a callback.
@@ -223,6 +228,34 @@ class vhosts {
         if (document.getElementById("console") !== null) {
             observer.observe(this.someElement, config);
         }
+    }
+
+    initPHPVersionChange(element: HTMLElement) {
+        const selectedVersion = $(element).attr("data-php-version");
+        $(".cbphp").each(function () {
+            const genericVersion = $(this).attr("data-php-version");
+            if (genericVersion != selectedVersion) {
+                $(this).prop("checked", false);
+            }
+        });
+        $.ajaxSetup({
+            beforeSend: function (xhr, type) {
+                if (!type.crossDomain) {
+                    xhr.setRequestHeader(
+                        "X-CSRF-Token",
+                        $('meta[name="csrf-token"]').attr("content")
+                    );
+                }
+            }
+        });
+        $.ajax({
+            url: "/vhosts/variousAjax",
+            method: "POST",
+            data: { type: "changePHPVersion", version: selectedVersion },
+            dataType: "json"
+        }).done(function (res) {
+            $("#console").append("\n$: " + res);
+        });
     }
 
     commandApachectl(command: string) {

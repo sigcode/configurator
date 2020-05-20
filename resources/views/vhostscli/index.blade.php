@@ -64,6 +64,62 @@
                 <div class=" ui button red stopApache" style="width:100%">Stop<br> Apache </div>
             </div>
         </div>
+    <div class="eight wide column">
+        <div class="ui four column grid">
+            <div class="four wide column">
+                <div class="ui two column grid">
+                    <div class="seven wide column">
+                        <div class="ui fitted toggle checkbox">
+                            <input type="checkbox" class="cbphp" id="cbphp71" data-php-version="71">
+                            <label></label>
+                        </div>
+                    </div>
+                    <div class="eight wide column">
+                        <div class="labelCheckbox">PHP 7.1</div>
+                    </div>
+                </div>
+            </div>
+            <div class="four wide column">
+                <div class="ui two column grid">
+                    <div class="seven wide column">
+                        <div class="ui fitted toggle checkbox">
+                            <input type="checkbox" class="cbphp" id="cbphp72" data-php-version="72">
+                            <label></label>
+                        </div>
+                    </div>
+                    <div class="eight wide column">
+                        <div class="labelCheckbox">PHP 7.2</div>
+                    </div>
+                </div>
+            </div>
+            <div class="four wide column">
+                <div class="ui two column grid">
+                    <div class="seven wide column">
+                        <div class="ui fitted toggle checkbox">
+                            <input type="checkbox" class="cbphp" checked="checked" id="cbphp73"  data-php-version="73">
+                            <label></label>
+                        </div>
+                    </div>
+                    <div class="eight wide column">
+                        <div class="labelCheckbox">PHP 7.3</div>
+                    </div>
+                </div>
+            </div>
+            <div class="four wide column">
+                <div class="ui two column grid">
+                    <div class="seven wide column">
+                        <div class="ui fitted toggle checkbox" >
+                            <input type="checkbox" class="cbphp" id="cbphp74"  data-php-version="74">
+                            <label></label>
+                        </div>
+                    </div>
+                    <div class="eight wide column">
+                        <div class="labelCheckbox">PHP 7.4</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        </div>
         <div class="ui black message compact floating" id="consoleWrapper" style="width:100%">
             <pre id="console">
             </pre>
