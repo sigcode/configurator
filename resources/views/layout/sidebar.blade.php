@@ -13,6 +13,10 @@
             Vhosts
         
         </a>
+
+        <a href="/settings" class="teal item {{ Request::path() === "settings" ? "active" : "" }}">
+            Settings
+        </a>
         
         
 </div>

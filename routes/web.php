@@ -25,10 +25,16 @@ Route::get('/dashboard2', function () {
 Auth::routes();
 Route::get('/vhosts', 'VhostcliController@index')->name("vhosts.index");
 Route::post('/vhosts', 'VhostController@store');
+
 Route::get('/vhosts/create', 'VhostController@create')->name("vhosts.create");
 Route::get('/vhosts/{vhost}', "VhostcliController@show")->name("vhosts.show");
 Route::get('/vhosts/{vhost}/edit', "VhostcliController@edit")->name("vhosts.edit");
+
 Route::put('/vhosts/{vhost}', "VhostcliController@update")->name("vhosts.update");
 Route::post('/vhosts/startStopVhost', "VhostcliController@startStopVhost")->name("vhosts.startStop");
 Route::post('/vhosts/apachectl', "VhostcliController@apachectl")->name("vhosts.apachectl");
 Route::post('/vhosts/variousAjax', "VhostcliController@variousAjax")->name("vhosts.div");
+
+// settings
+Route::get("/settings", "SettingsController@index")->name("settings.index");
+Route::post("/settings/updateCodeServer", "SettingsController@updateCodeServerConfig")->name("settings.update");
