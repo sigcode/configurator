@@ -17,7 +17,7 @@ class ConfigWriter {
         $content = "";
 
         foreach ($config as $key => $value) {
-            $content .= ($content == "" ? "" : "\n") . strtoupper($key) . "=" . '"' . $value ."'";
+            $content .= ($content == "" ? "" : "\n") . strtoupper($key)  . '=' . $value;
         }
 
         $path = dirname($file);
@@ -69,7 +69,7 @@ class ConfigWriter {
             $key   = substr($stringLine, 0, $pos);
             $value = substr($stringLine, $pos + 1);
 
-            $keyValue[$key] = substr($value, 1, -1);
+            $keyValue[$key] = $value; //substr($value, 1, -1);
 
         }
 
