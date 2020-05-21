@@ -50,36 +50,24 @@
        
     </div>
     <div class="eight wide column">
-        <div class="ui four column grid">
-            <div class="four wide column">
+        <div class="ui two column grid">
+            <div class="seven wide column">
                 <div class="ui button blue restartApache">Restart Apache</div>
             </div>
-            <div class="four wide column">
+            <div class="seven wide column">
                 <div class=" ui button orange apacheConfigtest">Apache Configtest</div>
             </div>
-            <div class="four wide column">
+            <!--
+            <div class="five wide column">
                 <div class=" ui button green startApache" style="width:100%">Start<br> Apache </div>
             </div>
             <div class="four wide column">
                 <div class=" ui button red stopApache" style="width:100%">Stop<br> Apache </div>
-            </div>
+            </div>-->
         </div>
     <div class="eight wide column">
-        <div class="ui four column grid">
-            <div class="four wide column">
-                <div class="ui two column grid">
-                    <div class="seven wide column">
-                        <div class="ui fitted toggle checkbox">
-                            <input type="checkbox" class="cbphp" id="cbphp71" data-php-version="71">
-                            <label></label>
-                        </div>
-                    </div>
-                    <div class="eight wide column">
-                        <div class="labelCheckbox">PHP 7.1</div>
-                    </div>
-                </div>
-            </div>
-            <div class="four wide column">
+        <div class="ui three column grid">
+            <div class="five wide column">
                 <div class="ui two column grid">
                     <div class="seven wide column">
                         <div class="ui fitted toggle checkbox">
@@ -92,7 +80,7 @@
                     </div>
                 </div>
             </div>
-            <div class="four wide column">
+            <div class="five wide column">
                 <div class="ui two column grid">
                     <div class="seven wide column">
                         <div class="ui fitted toggle checkbox">
@@ -105,7 +93,7 @@
                     </div>
                 </div>
             </div>
-            <div class="four wide column">
+            <div class="five wide column">
                 <div class="ui two column grid">
                     <div class="seven wide column">
                         <div class="ui fitted toggle checkbox" >
@@ -118,7 +106,7 @@
                     </div>
                 </div>
             </div>
-            
+         
 
         </div>
         </div>

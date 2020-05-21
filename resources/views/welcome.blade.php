@@ -6,7 +6,7 @@
         <div class="ui buttons">
             <button class="ui button blue" onclick="vhosts.apacheRestart()">Restart</button>
             <button class="ui button green" onclick="vhosts.apacheStart()">Start</button>
-            <button class="ui button red" onclick="vhosts.apacheStop()">Stop</button>
+           <!-- <button class="ui button red" onclick="vhosts.apacheStop()">Stop</button>-->
         </div>
         <div class="leftDashboard preWrapped ui segment tertiary raised"></div>
     </div>
@@ -30,6 +30,7 @@
         <div class></div>
         <div class="leftDashboardSecond preWrapped ui segment tertiary raised"></div>
     </div>
+    <!--
     <div class="7 wide column">
         <h1>Codesrv Conf Status (Hello Cpt. Obvious....): <span class="confState"><i class="play  circle icon"></i></span></h1>
         <div class="ui buttons">
@@ -38,7 +39,7 @@
             <button class="ui button red" onclick="vhosts.confAll()">Stop</button>
         </div>
         <div class="rightDashboardSecond preWrapped ui segment tertiary raised"></div>
-    </div>
+    </div>-->
 </div>
 @endauth @guest Please log in .... <a href="/login"> Go Go Go</a> @endguest
 

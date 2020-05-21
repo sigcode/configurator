@@ -52,7 +52,7 @@ return [
     |
     */
 
-    'url' => env('APP_URL', 'http://configurator.devspace'),
+    'url' => env('APP_URL', 'https://conf2.sguenther.codesrv.it'),
 
     'asset_url' => env('ASSET_URL', null),
 

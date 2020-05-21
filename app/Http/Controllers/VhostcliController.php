@@ -145,9 +145,7 @@ class VhostcliController extends Controller
                         $out = shell_exec($cmd);
                         $cmd = "sudo a2enmod php" . $insert;
                         $out .= shell_exec($cmd);
-                        $cmd = "sudo service apache2 stop";
-                        $out .= shell_exec($cmd);
-                        $cmd = "sudo service apache2 start";
+                        $cmd = "sudo service apache2 restart";
                         $out .= shell_exec($cmd);
                         $out .= "Restarted Apache2 with PHP 7.3";
                         break;
@@ -165,11 +163,6 @@ class VhostcliController extends Controller
             }
         }
         return $out;
-    }
-
-    private function getPHPVersion()
-    {
-        return phpversion();
     }
 
     private function serviceCommand()
