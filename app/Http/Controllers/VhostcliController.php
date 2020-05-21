@@ -113,6 +113,7 @@ class VhostcliController extends Controller
             case "changePHPVersion":
                 return json_encode($this->changePHPVersion());
                 break;
+
             default:
                 break;
         }
@@ -121,7 +122,54 @@ class VhostcliController extends Controller
     private function changePHPVersion()
     {
         $version = request()->version;
-        return "marvin for this version change to PHP $version i need that fuckin' command :D ";
+        if ($version == "") {
+            $out = "Fail - something shitty happend?!";
+        } else {
+            if ($version == "71") {
+                $out = "PHP 7.1 is not available because Marvin did not install it :/ Conftool is sad.";
+            } else {
+                switch ($version) {
+                    case "72":
+                        $insert = "7.2";
+                        $cmd = "sudo a2dismod php7.2 php7.3 php7.4";
+                        $out = shell_exec($cmd);
+                        $cmd = "sudo a2enmod php" . $insert;
+                        $out .= shell_exec($cmd);
+                        $cmd = "sudo service apache2 restart";
+                        $out .= shell_exec($cmd);
+                        $out .= "Restarted Apache2 with PHP 7.2";
+                        break;
+                    case "73":
+                        $insert = "7.3";
+                        $cmd = "sudo a2dismod php7.2 php7.3 php7.4";
+                        $out = shell_exec($cmd);
+                        $cmd = "sudo a2enmod php" . $insert;
+                        $out .= shell_exec($cmd);
+                        $cmd = "sudo service apache2 stop";
+                        $out .= shell_exec($cmd);
+                        $cmd = "sudo service apache2 start";
+                        $out .= shell_exec($cmd);
+                        $out .= "Restarted Apache2 with PHP 7.3";
+                        break;
+                    case "74":
+                        $insert = "7.4";
+                        $cmd = "sudo a2dismod php7.2 php7.3 php7.4";
+                        $out = shell_exec($cmd);
+                        $cmd = "sudo a2enmod php" . $insert;
+                        $out .= shell_exec($cmd);
+                        $cmd = "sudo service apache2 restart";
+                        $out .= shell_exec($cmd);
+                        $out .= "Restarted Apache2 with PHP 7.4";
+                        break;
+                }
+            }
+        }
+        return $out;
+    }
+
+    private function getPHPVersion()
+    {
+        return phpversion();
     }
 
     private function serviceCommand()

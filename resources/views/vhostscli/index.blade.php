@@ -83,7 +83,7 @@
                 <div class="ui two column grid">
                     <div class="seven wide column">
                         <div class="ui fitted toggle checkbox">
-                            <input type="checkbox" class="cbphp" id="cbphp72" data-php-version="72">
+                            <input type="checkbox" class="cbphp"  {{ (substr(phpversion(), 0, 3) == "7.2") ? "checked='checked'" : "" }} id="cbphp72" data-php-version="72">
                             <label></label>
                         </div>
                     </div>
@@ -96,7 +96,7 @@
                 <div class="ui two column grid">
                     <div class="seven wide column">
                         <div class="ui fitted toggle checkbox">
-                            <input type="checkbox" class="cbphp" checked="checked" id="cbphp73"  data-php-version="73">
+                            <input type="checkbox" class="cbphp" {{ (substr(phpversion(), 0, 3) == "7.3") ? "checked='checked'" : "" }} id="cbphp73"  data-php-version="73">
                             <label></label>
                         </div>
                     </div>
@@ -109,7 +109,7 @@
                 <div class="ui two column grid">
                     <div class="seven wide column">
                         <div class="ui fitted toggle checkbox" >
-                            <input type="checkbox" class="cbphp" id="cbphp74"  data-php-version="74">
+                            <input type="checkbox" class="cbphp" id="cbphp74"  {{ (substr(phpversion(), 0, 3) == "7.4") ? "checked='checked'" : "" }}  data-php-version="74">
                             <label></label>
                         </div>
                     </div>
@@ -118,6 +118,8 @@
                     </div>
                 </div>
             </div>
+            
+
         </div>
         </div>
         <div class="ui black message compact floating" id="consoleWrapper" style="width:100%">
