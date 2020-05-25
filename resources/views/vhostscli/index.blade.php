@@ -23,7 +23,7 @@
                     <div class="ten wide column">
                         <div class="content">
                             <div class="ui large header">
-                                <span class="headerName">{{$name}}</span><i class="pencil icon grey editPencilVHost" style=""></i>
+                                <span class="headerName">{{$name}}</span> @if(!in_array($name, $enabled)) <i class="pencil icon grey editPencilVHost" style=""></i>@endif
                             </div>
                             <div class="meta">
                                 <a href="{{ route('vhosts.edit' , ["vhost" => $name])}}"><span class="ui blue label">Edit</span></a>

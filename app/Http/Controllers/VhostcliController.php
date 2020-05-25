@@ -179,6 +179,7 @@ class VhostcliController extends Controller
         return $out;
     }
 
+
     private function getServiceState()
     {
         $name = request()->name;
@@ -200,9 +201,9 @@ class VhostcliController extends Controller
             $out = "Fail - both values need to be filled";
         } else {
             $cmd =
-                "sudo mv /etc/apache2/sites-available/" .
+                "sudo delegator xmv sites-available/" .
                 $old .
-                " /etc/apache2/sites-available/" .
+                " sites-available/" .
                 $new .
                 " 2>&1";
             $out = shell_exec($cmd);
@@ -217,7 +218,7 @@ class VhostcliController extends Controller
         if ($name == "") {
             $out = "Fail - something shitty happend?!";
         } else {
-            $cmd = "sudo rm /etc/apache2/sites-available/" . $name . " 2>&1";
+            $cmd = "sudo delegator xrm sites-available/" . $name . " 2>&1";
             $out = shell_exec($cmd);
         }
 
@@ -231,7 +232,7 @@ class VhostcliController extends Controller
         if ($name == "") {
             $out = "Fail - something shitty happend?!";
         } else {
-            $cmd = "sudo touch /etc/apache2/sites-available/" . $name . " 2>&1";
+            $cmd = "sudo delegator xtouch sites-available/" . $name . " 2>&1";
             $out = shell_exec($cmd);
         }
 
@@ -279,11 +280,11 @@ class VhostcliController extends Controller
         foreach ($lines as $line) {
             if ($cnt === 0) {
                 $cmd =
-                    "echo '$line' | sudo tee  /etc/apache2/sites-available/" .
+                    "echo '$line' | sudo delegator xtee  sites-available/" .
                     $filename;
             } else {
                 $cmd =
-                    "echo '$line' | sudo tee -a /etc/apache2/sites-available/" .
+                    "echo '$line' | sudo delegator xtee -a sites-available/" .
                     $filename;
             }
 
