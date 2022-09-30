@@ -131,7 +131,7 @@ class VhostcliController extends Controller
                 switch ($version) {
                     case "72":
                         $insert = "7.2";
-                        $cmd = "sudo a2dismod php7.2 php7.3 php7.4";
+                        $cmd = "sudo a2dismod php8.0 php7.3 php7.4";
                         $out = shell_exec($cmd);
                         $cmd = "sudo a2enmod php" . $insert;
                         $out .= shell_exec($cmd);
@@ -141,7 +141,7 @@ class VhostcliController extends Controller
                         break;
                     case "73":
                         $insert = "7.3";
-                        $cmd = "sudo a2dismod php7.2 php7.3 php7.4";
+                        $cmd = "sudo a2dismod php8.0 php7.3 php7.4";
                         $out = shell_exec($cmd);
                         $cmd = "sudo a2enmod php" . $insert;
                         $out .= shell_exec($cmd);
@@ -151,13 +151,33 @@ class VhostcliController extends Controller
                         break;
                     case "74":
                         $insert = "7.4";
-                        $cmd = "sudo a2dismod php7.2 php7.3 php7.4";
+                        $cmd = "sudo a2dismod php8.0 php7.3 php7.4";
                         $out = shell_exec($cmd);
                         $cmd = "sudo a2enmod php" . $insert;
                         $out .= shell_exec($cmd);
                         $cmd = "sudo service apache2 restart";
                         $out .= shell_exec($cmd);
                         $out .= "Restarted Apache2 with PHP 7.4";
+                        break;
+                    case "80":
+                        $insert = "8.0";
+                        $cmd = "sudo a2dismod php8.0 php7.3 php7.4";
+                        $out = shell_exec($cmd);
+                        $cmd = "sudo a2enmod php" . $insert;
+                        $out .= shell_exec($cmd);
+                        $cmd = "sudo service apache2 restart";
+                        $out .= shell_exec($cmd);
+                        $out .= "Restarted Apache2 with PHP 8.0";
+                        break;
+                    case "81":
+                        $insert = "8.1";
+                        $cmd = "sudo a2dismod php8.0 php7.3 php7.4 php8.1";
+                        $out = shell_exec($cmd);
+                        $cmd = "sudo a2enmod php" . $insert;
+                        $out .= shell_exec($cmd);
+                        $cmd = "sudo service apache2 restart";
+                        $out .= shell_exec($cmd);
+                        $out .= "Restarted Apache2 with PHP 8.1";
                         break;
                 }
             }
