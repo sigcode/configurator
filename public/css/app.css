@@ -11,6 +11,7 @@
 .deleteVhost,
 .newVhost,
 .fileendingIncorrect,
+.certbotVhost,
 .stopVhost {
   cursor: pointer;
 }

@@ -37,6 +37,12 @@
                                     <i class="{{ in_array($name, $enabled) ? "stop": "play" }} icon"></i>
                                     {{ in_array($name, $enabled) ? "deactivate": "activate" }}
                                 </span>
+                                @if (!preg_match("/le-ssl/", $name) && in_array($name, $enabled))
+                                <span data-name="{{$name}}" class="ui label certbotVhost" style="cursor:pointer">
+                                    <i class="alarm icon margin-2"></i>
+                                    certbot
+                                </span>
+                                @endif
 
                             </div>
                         </div>

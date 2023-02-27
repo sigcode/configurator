@@ -63,6 +63,20 @@ class VhostcliController extends Controller
         return json_encode($out);
     }
 
+    public function runCertbot()
+    {
+        
+        $vhost = request()->name;
+        $vhost = str_replace(".conf", "", $vhost);
+        $vhost .= ".sucv.de";
+        if ($vhost != "") {
+            $cmd = "sudo certbot --apache -d $vhost";
+        }
+        $out = shell_exec($cmd);
+        return ($out);
+    }
+
+
     public function edit(string $param)
     {
         $vhost = null;
@@ -109,6 +123,9 @@ class VhostcliController extends Controller
                 break;
             case "serviceCommand":
                 return json_encode($this->serviceCommand());
+                break;
+            case "runCertbot":
+                return json_encode($this->runCertbot());
                 break;
             case "changePHPVersion":
                 return json_encode($this->changePHPVersion());

@@ -179,6 +179,11 @@ class vhosts {
             that.deleteVhost(this);
         });
 
+        $(".certbotVhost").unbind();
+        $(".certbotVhost").on("click", function () {
+            console.log("bla");
+            that.runCertbot(this);
+        });
         $(".newVhost").unbind();
         $(".newVhost").on("click", function () {
             that.newVhost();
@@ -453,6 +458,32 @@ class vhosts {
             document.getElementById(name).remove();
         });
     }
+
+
+    runCertbot(element: HTMLElement) {
+        const name = $(element).attr("data-name");
+        const that = this;
+        $.ajaxSetup({
+            beforeSend: function (xhr, type) {
+                if (!type.crossDomain) {
+                    xhr.setRequestHeader(
+                        "X-CSRF-Token",
+                        $('meta[name="csrf-token"]').attr("content")
+                    );
+                }
+            }
+        });
+        $.ajax({
+            url: "/vhosts/variousAjax",
+            method: "POST",
+            data: { type: "runCertbot", name: name },
+            dataType: "json"
+        }).done(function (res) {
+            $("#console").append("\n$: " + res);
+            document.getElementById(name).remove();
+        });
+    }
+
 
     startStopVhost(element: HTMLElement, start: boolean) {
         const name = $(element).attr("data-name");

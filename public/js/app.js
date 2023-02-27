@@ -108,14 +108,11 @@ __webpack_require__.r(__webpack_exports__);
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-var vhosts =
-/** @class */
-function () {
+var vhosts = /** @class */function () {
   function vhosts() {
     this.startListeners();
     this.appendState();
   }
-
   vhosts.prototype.appendState = function () {
     if (document.getElementById("dashboard") !== null) {
       this.getStatus("apacheState", "leftDashboard", "apache2");
@@ -124,47 +121,36 @@ function () {
       this.getStatus("confState", "rightDashboardSecond", "confer");
     }
   };
-
   vhosts.prototype.codeserverRestart = function () {
     this.serviceCommand("codeserver3", "restart", "codeserverState", "rightDashboard");
   };
-
   vhosts.prototype.codeserverStart = function () {
     this.serviceCommand("codeserver3", "start", "codeserverState", "rightDashboard");
   };
-
   vhosts.prototype.codeserverStop = function () {
     this.serviceCommand("codeserver3", "stop", "codeserverState", "rightDashboard");
   };
-
   vhosts.prototype.apacheRestart = function () {
     this.serviceCommand("apache2", "restart", "apacheState", "leftDashboard");
   };
-
   vhosts.prototype.apacheStart = function () {
     this.serviceCommand("apache2", "start", "apacheState", "leftDashboard");
   };
-
   vhosts.prototype.apacheStop = function () {
     this.serviceCommand("apache2", "stop", "apacheState", "leftDashboard");
   };
-
   vhosts.prototype.mysqlRestart = function () {
     this.serviceCommand("mysql", "restart", "mysqlState", "leftDashboardSecond");
   };
-
   vhosts.prototype.mysqlStart = function () {
     this.serviceCommand("mysql", "start", "mysqlState", "leftDashboardSecond");
   };
-
   vhosts.prototype.mysqlStop = function () {
     this.serviceCommand("mysql", "stop", "mysqlState", "leftDashboardSecond");
   };
-
   vhosts.prototype.confAll = function () {
     $(".ui.modal").modal("show");
   };
-
   vhosts.prototype.serviceCommand = function (service, command, statusSpan, contentdiv) {
     var that = this;
     $.ajaxSetup({
@@ -187,7 +173,6 @@ function () {
       that.getStatus(statusSpan, contentdiv, service);
     });
   };
-
   vhosts.prototype.getStatus = function (statusSpan, contentdiv, servicename) {
     $.ajaxSetup({
       beforeSend: function beforeSend(xhr, type) {
@@ -207,7 +192,6 @@ function () {
     }).done(function (res) {
       $("." + contentdiv).empty();
       $("." + contentdiv).append(res);
-
       if (res.match(/Active: active \(running\)/g)) {
         $("." + statusSpan).find("i").addClass("green");
         $("." + statusSpan).find("i").addClass("play");
@@ -221,7 +205,6 @@ function () {
       }
     });
   };
-
   vhosts.prototype.startListeners = function () {
     var that = this;
     $(".startVhost").unbind();
@@ -235,6 +218,11 @@ function () {
     $(".deleteVhost").unbind();
     $(".deleteVhost").on("click", function () {
       that.deleteVhost(this);
+    });
+    $(".certbotVhost").unbind();
+    $(".certbotVhost").on("click", function () {
+      console.log("bla");
+      that.runCertbot(this);
     });
     $(".newVhost").unbind();
     $(".newVhost").on("click", function () {
@@ -267,26 +255,23 @@ function () {
     $(".cbphp").unbind();
     $(".cbphp").on("click", function () {
       that.initPHPVersionChange(this);
-    }); // Get a reference to the div you want to auto-scroll.
-
-    this.someElement = document.querySelector("#console"); // Create an observer and pass it a callback.
-
-    var observer = new MutationObserver(this.scrollToBottom); // Tell it to look for new children that will change the height.
-
+    });
+    // Get a reference to the div you want to auto-scroll.
+    this.someElement = document.querySelector("#console");
+    // Create an observer and pass it a callback.
+    var observer = new MutationObserver(this.scrollToBottom);
+    // Tell it to look for new children that will change the height.
     var config = {
       childList: true
     };
-
     if (document.getElementById("console") !== null) {
       observer.observe(this.someElement, config);
     }
   };
-
   vhosts.prototype.initPHPVersionChange = function (element) {
     var selectedVersion = $(element).attr("data-php-version");
     $(".cbphp").each(function () {
       var genericVersion = $(this).attr("data-php-version");
-
       if (genericVersion != selectedVersion) {
         $(this).prop("checked", false);
       }
@@ -310,7 +295,6 @@ function () {
       $("#console").append("\n$: " + res);
     });
   };
-
   vhosts.prototype.commandApachectl = function (command) {
     $.ajaxSetup({
       beforeSend: function beforeSend(xhr, type) {
@@ -330,7 +314,6 @@ function () {
       $("#console").append("\n$: " + res);
     });
   };
-
   vhosts.prototype.initRenameVhost = function (element) {
     var header = $(element).parent().find(".headerName")[0];
     var that = this;
@@ -352,13 +335,11 @@ function () {
         if (shotsFired == 0) {
           that.renameVhost(oldname, inp.value, element, inp, header);
         }
-
         shotsFired++;
       }
     });
     $(inp).insertBefore($(header));
   };
-
   vhosts.prototype.renameVhost = function (oldName, newName, iElement, inputElement, headerElement) {
     $.ajaxSetup({
       beforeSend: function beforeSend(xhr, type) {
@@ -385,77 +366,61 @@ function () {
       $(headerElement).show();
     });
   };
-
   vhosts.prototype.restartApache = function () {
     $("#console").append("\n$: apachectl restart");
     this.commandApachectl("restart");
   };
-
   vhosts.prototype.startApache = function () {
     $("#console").append("\n$: apachectl start");
     this.commandApachectl("start");
   };
-
   vhosts.prototype.stopApache = function () {
     $("#console").append("\n$: apachectl stop");
     this.commandApachectl("stop");
   };
-
   vhosts.prototype.apacheConfigtest = function () {
     $("#console").append("\n$: apachectl configtest");
     this.commandApachectl("configtest");
   };
-
   vhosts.prototype.animateScroll = function (duration) {
     var start = this.someElement.scrollTop;
     var end = this.someElement.scrollHeight;
     var change = end - start;
     var increment = 20;
-
     function easeInOut(currentTime, start, change, duration) {
       // by Robert Penner
       currentTime /= duration / 2;
-
       if (currentTime < 1) {
         return change / 2 * currentTime * currentTime + start;
       }
-
       currentTime -= 1;
       return -change / 2 * (currentTime * (currentTime - 2) - 1) + start;
     }
-
     function animate(elapsedTime) {
       elapsedTime += increment;
       var position = easeInOut(elapsedTime, start, change, duration);
       this.someElement.scrollTop = position;
-
       if (elapsedTime < duration) {
         setTimeout(function () {
           animate(elapsedTime);
         }, increment);
       }
     }
-
     animate(0);
   };
-
   vhosts.prototype.scrollToBottom = function () {
     this.someElement = document.querySelector("#console");
     console.log(this.someElement.scrollHeight);
     this.someElement.scrollTop = this.someElement.scrollHeight;
     var duration = 300; // Or however many milliseconds you want to scroll to last
-
     animateScroll(duration, this.someElement);
   };
-
   vhosts.prototype.newVhost = function () {
     $(".ui.modal").modal("show");
   };
-
   vhosts.prototype.newVhostSubmit = function () {
     var name = $(".newVhostName").val();
     var valid = /\.(conf)$/i.test(name);
-
     if (valid) {
       $.ajaxSetup({
         beforeSend: function beforeSend(xhr, type) {
@@ -484,7 +449,6 @@ function () {
       });
     }
   };
-
   vhosts.prototype.deleteVhost = function (element) {
     var name = $(element).attr("data-name");
     var that = this;
@@ -508,7 +472,29 @@ function () {
       document.getElementById(name).remove();
     });
   };
-
+  vhosts.prototype.runCertbot = function (element) {
+    var name = $(element).attr("data-name");
+    var that = this;
+    $.ajaxSetup({
+      beforeSend: function beforeSend(xhr, type) {
+        if (!type.crossDomain) {
+          xhr.setRequestHeader("X-CSRF-Token", $('meta[name="csrf-token"]').attr("content"));
+        }
+      }
+    });
+    $.ajax({
+      url: "/vhosts/variousAjax",
+      method: "POST",
+      data: {
+        type: "runCertbot",
+        name: name
+      },
+      dataType: "json"
+    }).done(function (res) {
+      $("#console").append("\n$: " + res);
+      document.getElementById(name).remove();
+    });
+  };
   vhosts.prototype.startStopVhost = function (element, start) {
     var name = $(element).attr("data-name");
     var that = this;
@@ -540,50 +526,40 @@ function () {
         $(i).addClass("play").addClass("icon");
         $(element).removeClass("stopVhost").addClass("startVhost").empty().append(i).append("activate");
       }
-
       that.startListeners();
       $("#console").append("\n$: " + res);
     }).fail(function (res) {
       console.log(res);
     });
   };
-
   return vhosts;
 }();
-
 function animateScroll(duration, someElement) {
   var start = someElement.scrollTop;
   var end = someElement.scrollHeight;
   var change = end - start;
   var increment = 20;
-
   function easeInOut(currentTime, start, change, duration) {
     // by Robert Penner
     currentTime /= duration / 2;
-
     if (currentTime < 1) {
       return change / 2 * currentTime * currentTime + start;
     }
-
     currentTime -= 1;
     return -change / 2 * (currentTime * (currentTime - 2) - 1) + start;
   }
-
   function animate(elapsedTime) {
     elapsedTime += increment;
     var position = easeInOut(elapsedTime, start, change, duration);
     someElement.scrollTop = position;
-
     if (elapsedTime < duration) {
       setTimeout(function () {
         animate(elapsedTime);
       }, increment);
     }
   }
-
   animate(0);
 }
-
 document.addEventListener("DOMContentLoaded", function (event) {
   window["vhosts"] = new vhosts();
 });
@@ -608,8 +584,8 @@ document.addEventListener("DOMContentLoaded", function (event) {
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! /var/www/configurator/resources/js/app.js */"./resources/js/app.js");
-module.exports = __webpack_require__(/*! /var/www/configurator/resources/sass/app.scss */"./resources/sass/app.scss");
+__webpack_require__(/*! /var/www/vhosts/configurator/resources/js/app.js */"./resources/js/app.js");
+module.exports = __webpack_require__(/*! /var/www/vhosts/configurator/resources/sass/app.scss */"./resources/sass/app.scss");
 
 
 /***/ })
