@@ -141,7 +141,7 @@ export default function VhostList() {
                                     {!vhost.includes("ssl") ? (
                                         <ConfirmDialog
                                             variant="outlined"
-                                            color="secondary"
+                                            color="tertiary"
                                             onClick={() => runCertbot(vhost)}
                                             sx={{ marginLeft: "10px" }}
                                             startIcon={<SmartToyIcon />}
