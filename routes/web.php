@@ -24,12 +24,15 @@ Route::get('/dashboard2', function () {
 });
 Auth::routes();
 Route::get('/vhosts', 'VhostcliController@index')->name("vhosts.index");
+Route::get('/vhostsReact', 'VhostcliController@indexreact')->name("vhosts.indexreact");
 Route::post('/vhosts', 'VhostController@store');
 
 Route::get('/vhosts/create', 'VhostController@create')->name("vhosts.create");
 Route::get('/vhosts/{vhost}', "VhostcliController@show")->name("vhosts.show");
 Route::get('/vhosts/{vhost}/edit', "VhostcliController@edit")->name("vhosts.edit");
-
+Route::post('/vhosts/phpversion', "VhostcliController@phpversion")->name("vhosts.phpversion");
+Route::post('/vhosts/vhoststatus', "VhostcliController@vhoststatus")->name("vhosts.vhoststatus");
+Route::post('/vhosts/updatevhost', "VhostcliController@updatevhost")->name("vhosts.updatevhost");
 Route::put('/vhosts/{vhost}', "VhostcliController@update")->name("vhosts.update");
 Route::post('/vhosts/startStopVhost', "VhostcliController@startStopVhost")->name("vhosts.startStop");
 Route::post('/vhosts/apachectl', "VhostcliController@apachectl")->name("vhosts.apachectl");

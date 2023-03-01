@@ -22,6 +22,24 @@ class VhostcliController extends Controller
         $this->getRealVhosts("enabled");
     }
 
+
+    public function indexReact()
+    {
+        $enabled = [];
+        foreach ($this->vHostsAvailable as $key => $content) {
+            foreach ($content as $name => $val) {
+                foreach ($this->vHostsEnabled as $k => $v) {
+                    if (array_key_exists($name, $v)) {
+                        $enabled[] = $name;
+                    }
+                }
+            }
+        }
+        return view('vhostscli.indexreact', [
+            "realVhosts" => $this->vHostsAvailable,
+            "enabled" => $enabled,
+        ]);
+    }
     public function index()
     {
         $enabled = [];
@@ -41,6 +59,27 @@ class VhostcliController extends Controller
         ]);
     }
 
+    public function phpversion()
+    {
+        $version = substr(phpversion(), 0, 3);
+        return json_encode($version);
+    }
+
+    public function vhoststatus()
+    {
+        $enabled = [];
+        foreach ($this->vHostsAvailable as $key => $content) {
+            foreach ($content as $name => $val) {
+                foreach ($this->vHostsEnabled as $k => $v) {
+                    if (array_key_exists($name, $v)) {
+                        $enabled[] = $name;
+                    }
+                }
+            }
+        }
+        return json_encode(["enabled" => $enabled, "available" => $this->vHostsAvailable]);
+    }
+
     public function startStopVhost()
     {
         $name = request()->name;
@@ -57,7 +96,11 @@ class VhostcliController extends Controller
     public function apachectl()
     {
         $command = request()->command;
-        $cmd = "sudo apachectl $command 2>&1";
+        if ($command == "reload") {
+            $cmd = "sudo service apache2 reload 2>&1";
+        } else {
+            $cmd = "sudo apachectl $command 2>&1";
+        }
         $out = shell_exec($cmd);
 
         return json_encode($out);
@@ -65,7 +108,7 @@ class VhostcliController extends Controller
 
     public function runCertbot()
     {
-        
+
         $vhost = request()->name;
         $vhost = str_replace(".conf", "", $vhost);
         $vhost .= ".sucv.de";
@@ -76,6 +119,15 @@ class VhostcliController extends Controller
         return ($out);
     }
 
+
+    public function updatevhost()
+    {
+        $content = request()->value;
+        $name = request()->name;
+        $out = $this->saveVhost( $content, $name);
+        return json_encode($out);
+
+    }
 
     public function edit(string $param)
     {
@@ -142,65 +194,53 @@ class VhostcliController extends Controller
         if ($version == "") {
             $out = "Fail - something shitty happend?!";
         } else {
-            if ($version == "71") {
-                $out = "PHP 7.1 is not available because Marvin did not install it :/ Conftool is sad.";
+            //put dot between 7 and 2
+            $version = substr($version, 0, 1) . "." . substr($version, 1, 1);
+            $mod = "php" . $version;
+            //check if mod is installed
+            $cmd = "a2query -m $mod 2>&1";
+            $out = shell_exec($cmd);
+            if (!preg_match("/disabled by/", $out)) {
+                return "PHP $version is not installed \n";
             } else {
                 switch ($version) {
-                    case "72":
-                        $insert = "7.2";
-                        $cmd = "sudo a2dismod php8.0 php7.3 php7.4";
-                        $out = shell_exec($cmd);
-                        $cmd = "sudo a2enmod php" . $insert;
-                        $out .= shell_exec($cmd);
-                        $cmd = "sudo service apache2 restart";
-                        $out .= shell_exec($cmd);
-                        $out .= "Restarted Apache2 with PHP 7.2";
-                        break;
-                    case "73":
-                        $insert = "7.3";
-                        $cmd = "sudo a2dismod php8.0 php7.3 php7.4";
-                        $out = shell_exec($cmd);
-                        $cmd = "sudo a2enmod php" . $insert;
-                        $out .= shell_exec($cmd);
-                        $cmd = "sudo service apache2 restart";
-                        $out .= shell_exec($cmd);
-                        $out .= "Restarted Apache2 with PHP 7.3";
-                        break;
-                    case "74":
+
+                    case "7.4":
                         $insert = "7.4";
-                        $cmd = "sudo a2dismod php8.0 php7.3 php7.4 php8.1";
+                        $cmd = "sudo a2dismod php8.0 php7.4 php8.1 2>&1";
                         $out = shell_exec($cmd);
                         $cmd = "sudo a2enmod php" . $insert;
                         $out .= shell_exec($cmd);
-                        $cmd = "sudo service apache2 restart";
+                        $cmd = "sudo service apache2 reload";
+                        $out .= "Reloaded Apache2 with PHP 7.4";
                         $out .= shell_exec($cmd);
-                        $out .= "Restarted Apache2 with PHP 7.4";
                         break;
-                    case "80":
+                    case "8.0":
                         $insert = "8.0";
-                        $cmd = "sudo a2dismod php8.0 php7.3 php7.4 php8.1";
+                        $cmd = "sudo a2dismod php8.0 php7.4 php8.1";
                         $out = shell_exec($cmd);
                         $cmd = "sudo a2enmod php" . $insert;
                         $out .= shell_exec($cmd);
                         $cmd = "sudo service apache2 restart";
-                        $out .= shell_exec($cmd);
-                        $out .= "Restarted Apache2 with PHP 8.0";
+                        $out .= "Reloaded Apache2 with PHP 8.0";
+                        return $out && shell_exec($cmd);
                         break;
-                    case "81":
+                    case "8.1":
                         $insert = "8.1";
-                        $cmd = "sudo a2dismod php8.0 php7.3 php7.4 php8.1";
+                        $cmd = "sudo a2dismod php8.0 php7.4 php8.1";
                         $out = shell_exec($cmd);
-                        $cmd = "sudo a2enmod php" . $insert;
+                        $cmd = "sudo a2enmod php8.1";
                         $out .= shell_exec($cmd);
-                        $cmd = "sudo service apache2 restart";
+                        $cmd = "sudo service apache2 reload";
+                        $out .= "Reloaded Apache2 with PHP 8.1";
                         $out .= shell_exec($cmd);
-                        $out .= "Restarted Apache2 with PHP 8.1";
                         break;
                 }
             }
         }
         return $out;
     }
+
 
     private function serviceCommand()
     {
@@ -328,5 +368,6 @@ class VhostcliController extends Controller
             $out = shell_exec($cmd);
             $cnt++;
         }
+        return $out;
     }
 }
