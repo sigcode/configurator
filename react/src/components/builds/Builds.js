@@ -18,7 +18,6 @@ export default function Builds(props) {
     const [currentBuild, setCurrentBuild] = useState(null);
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(5);
-
     const dispatch = useDispatch();
 
     const storeBuilds = useSelector((state) => state.Build.builds);
@@ -38,7 +37,8 @@ export default function Builds(props) {
         },
     }));
 
-    const handleChangePage = (newPage) => {
+    const handleChangePage = (event, newPage) => {
+        console.log(newPage);
         setPage(newPage);
     };
 
