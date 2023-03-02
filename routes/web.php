@@ -41,3 +41,16 @@ Route::post('/vhosts/variousAjax', "VhostcliController@variousAjax")->name("vhos
 // settings
 Route::get("/settings", "SettingsController@index")->name("settings.index");
 Route::post("/settings/updateCodeServer", "SettingsController@updateCodeServerConfig")->name("settings.update");
+
+
+
+//Builds
+Route::get("/builds", "BuildController@index")->name("builds.index")->middleware('auth');
+Route::post("/builds/update", "BuildController@update")->name("builds.update")->middleware('auth');
+Route::delete("/builds/{build}", "BuildController@destroy")->name("builds.destroy")->middleware('auth');
+
+//BuildProcesses by Build
+Route::get("/builds/{build}/buildprocesses", "BuildProcessesController@index")->name("buildprocesses.index")->middleware('auth');
+
+//BuildProcesses single
+Route::get("/buildprocesses/{buildprocess}", "BuildProcessesController@show")->name("buildprocesses.show")->middleware('auth');

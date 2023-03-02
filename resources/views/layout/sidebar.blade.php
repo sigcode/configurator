@@ -14,6 +14,10 @@
          Vhosts
 
      </a>
+     <a href="/builds" class="teal item {{ Request::path() === "builds" ? "active" : "" }}">
+         Builds
+
+     </a>
      <a href="/settings" class="teal item {{ Request::path() === "settings" ? "active" : "" }}">
          Settings
      </a>

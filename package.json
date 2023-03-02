@@ -58,6 +58,7 @@
         "file-icons-js": "github:websemantics/file-icons-js",
         "gulp": "^4.0.2",
         "gulp-postcss": "^9.0.1",
+        "moment": "^2.29.4",
         "monaco-editor": "^0.20.0",
         "mui-file-dropzone": "^4.0.2",
         "react": "^17.0.2",

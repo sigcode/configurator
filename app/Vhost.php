@@ -12,14 +12,4 @@ class Vhost extends Model
     {
         return route('vhosts.show', $this);
     }
-
-    public function user()
-    {
-        return $this->belongsTo(User::class);
-    }
-
-    public function tags()
-    {
-        return $this->belongsToMany(\App\Tag::class)->withTimestamps();
-    }
 }
