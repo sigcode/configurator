@@ -20,6 +20,8 @@ class BuildFactory extends Factory
             'repo_branch' => $this->faker->name,
             'deployment_path' => $this->faker->slug,
             'has_submodules' => $this->faker->boolean,
+            'built_target' => $this->faker->name,
+            'build_type' => $this->faker->randomElement(['ant', 'git']),
         ];
     }
 }

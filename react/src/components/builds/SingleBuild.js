@@ -1,5 +1,5 @@
-import React, { useRef } from 'react';
-import { Button, Checkbox, TextField, FormControl, FormControlLabel, FormGroup } from '@mui/material';
+import React, { useRef, useState } from 'react';
+import { Button, Checkbox, TextField, FormControl, FormControlLabel, FormGroup, InputLabel, Select, MenuItem } from '@mui/material';
 import { useSelector, useDispatch } from 'react-redux';
 import { updateBuild } from './store/slices/BuildSlice.js';
 export default function SingleBuild(props) {
@@ -8,19 +8,22 @@ export default function SingleBuild(props) {
     const repo_url_ref = useRef();
     const repo_branch_ref = useRef();
     const deployment_path_ref = useRef();
-    const has_submodules_ref = useRef();
+    const build_target_ref = useRef();
     const builds = useSelector((state) => state.Build.builds);
-    console.log(builds);
     const build = builds.find((build) => build.id == buildId);
     const dispatch = useDispatch();
-    const update = (e) => {
+    const [build_type, setBuildType] = useState(build.build_type);
+    const [has_submodules, setHasSubmodules] = useState(build.has_submodules);
+    const update = () => {
         const data = {
             id: build.id,
             repo_name: repo_name_ref.current.value,
             repo_url: repo_url_ref.current.value,
             repo_branch: repo_branch_ref.current.value,
             deployment_path: deployment_path_ref.current.value,
-            has_submodules: has_submodules_ref.current.checked,
+            has_submodules: has_submodules,
+            build_target: build_target_ref.current.value,
+            build_type: build_type,
         };
         dispatch(updateBuild(data));
     };
@@ -53,12 +56,34 @@ export default function SingleBuild(props) {
                     </FormControl>
                 </div>
                 <div className="flex flex-row my-5">
+                    <FormControl fullWidth sx={{ m: 1 }}>
+                        <TextField id="build_target" label="Build Target" name="build_target" defaultValue={build.build_target} inputRef={build_target_ref} />
+                    </FormControl>
+                </div>
+                <div className="flex flex-row my-5">
+                    <FormControl fullWidth sx={{ m: 1 }}>
+                        <InputLabel id="build_type">Build Type</InputLabel>
+                        <Select
+                            labelId="build_type"
+                            id="build_type"
+                            name="build_type"
+                            defaultValue={build.build_type}
+                            label="Build Type"
+                            onChange={(e) => setBuildType(e.target.value)}
+                        >
+                            <MenuItem value="ant">Ant</MenuItem>
+                            <MenuItem value="git">Git</MenuItem>
+                        </Select>
+                    </FormControl>
+                </div>
+                <div className="flex flex-row my-5">
                     <FormGroup fullWidth sx={{ m: 1 }}>
                         <FormControlLabel
-                            control={<Checkbox id="has_submodules" label="Has Submodules" name="has_submodules" checked={build.has_submodules} inputRef={has_submodules_ref} />}
+                            control={<Checkbox id="has_submodules" label="Has Submodules" name="has_submodules" checked={has_submodules} onChange={() => setHasSubmodules(!has_submodules)} />}
                             label="Has Submodules" />
                     </FormGroup>
                 </div>
+
                 <div className="flex flex-row my-5">
                     <Button variant="contained" onClick={() => update()}>Update</Button>
                 </div>

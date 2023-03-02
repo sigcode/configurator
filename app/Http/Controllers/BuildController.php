@@ -29,6 +29,8 @@ class BuildController extends Controller
         $build->repo_branch = $request->repo_branch;
         $build->deployment_path = $request->deployment_path;
         $build->has_submodules = $request->has_submodules;
+        $build->build_target = $request->build_target == null ? '' : $request->build_target;
+        $build->build_type = $request->build_type;
         $build->save();
         return json_encode($build);
     }

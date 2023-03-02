@@ -17,7 +17,7 @@ export default function Builds(props) {
     const [showTable, setShowTable] = useState(true);
     const [currentBuild, setCurrentBuild] = useState(null);
     const [page, setPage] = useState(0);
-    const [rowsPerPage, setRowsPerPage] = useState(5);
+    const [rowsPerPage, setRowsPerPage] = useState(10);
     const dispatch = useDispatch();
 
     const storeBuilds = useSelector((state) => state.Build.builds);
@@ -38,7 +38,7 @@ export default function Builds(props) {
     }));
 
     const handleChangePage = (event, newPage) => {
-        console.log(newPage);
+        event;
         setPage(newPage);
     };
 
@@ -71,7 +71,6 @@ export default function Builds(props) {
                                     <StyledTableCell align="right">Repo URL</StyledTableCell>
                                     <StyledTableCell align="right">Repo Branch</StyledTableCell>
                                     <StyledTableCell align="right">Deployment Path</StyledTableCell>
-                                    <StyledTableCell align="right">Created At</StyledTableCell>
                                     <StyledTableCell align="right">Updated At</StyledTableCell>
                                     <StyledTableCell align="right">Actions</StyledTableCell>
                                 </TableRow>
@@ -90,7 +89,6 @@ export default function Builds(props) {
                                                 <TableCell align="right">{build.repo_url}</TableCell>
                                                 <TableCell align="right">{build.repo_branch}</TableCell>
                                                 <TableCell align="right">{build.deployment_path}</TableCell>
-                                                <TableCell align="right">{Moment(build.created_at).format('DD.MM.YYYY hh:mm:ss')}</TableCell>
                                                 <TableCell align="right">{Moment(build.updated_at).format('DD.MM.YYYY hh:mm:ss')}</TableCell>
                                                 <TableCell align="right"><Button variant='contained'
                                                     onClick={() => openBuild(build.id)}>Edit</Button>
