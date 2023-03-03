@@ -60,8 +60,11 @@ export default function SingleBuild(props) {
 
     useEffect(() => {
         if (build.id > 0) {
-            dispatch(getProcesses({ id: buildId }));
+            setInterval(() => {
+                dispatch(getProcesses({ id: buildId }));
+            }, 1000);
         }
+
     }, []);
 
 
@@ -69,12 +72,12 @@ export default function SingleBuild(props) {
         dispatch(getProcesses({ id: buildId }));
     };
 
-    useEffect(() => {
-        let lastProcess = processes[processes.length - 1];
-        if (lastProcess != undefined) {
-            setOutput(lastProcess.output);
-        }
-    }, [processes]);
+    // useEffect(() => {
+    //     let lastProcess = processes[processes.length - 1];
+    //     if (lastProcess != undefined) {
+    //         setOutput(lastProcess.output);
+    //     }
+    // }, [processes]);
 
     const run = (id) => {
         dispatch(setRunningBuild(id));
@@ -82,7 +85,7 @@ export default function SingleBuild(props) {
             id: id,
         };
         axios.post('/builds/run', data).then((response) => {
-            dispatch(getProcesses({ id: buildId }));
+            // dispatch(getProcesses({ id: buildId }));
             dispatch(setRunningBuild(null));
         });
     }
@@ -176,70 +179,69 @@ export default function SingleBuild(props) {
                     }
                 </div>
 
-                {loading ? <p>Loading...</p> :
 
-                    <div class="mt-10">
-                        <h2>Processes</h2>
-                        {runningBuild == build.id ?
-                            <>
-                                <Button variant="contained" sx={{ marginLeft: "10px" }} disabled>Running</Button>
-                                <Button variant="contained" sx={{ marginLeft: "10px" }} onClick={() => reCheckBuild()}>Recheck Build Status</Button>
-                            </>
-                            :
-                            <ConfirmDialog
-                                startIcon={<DirectionsRun />}
-                                color="secondary"
-                                sx={{ marginLeft: "10px" }}
-                                buttonText="Run new Build"
-                                title=""
-                                variant="contained"
+                <div class="mt-10">
+                    <h2>Processes</h2>
+                    {runningBuild == build.id ?
+                        <>
+                            <Button variant="contained" sx={{ marginLeft: "10px" }} disabled>Running</Button>
+                            <Button variant="contained" sx={{ marginLeft: "10px" }} onClick={() => reCheckBuild()}>Recheck Build Status</Button>
+                        </>
+                        :
+                        <ConfirmDialog
+                            startIcon={<DirectionsRun />}
+                            color="secondary"
+                            sx={{ marginLeft: "10px" }}
+                            buttonText="Run new Build"
+                            title=""
+                            variant="contained"
 
-                                content="Start new build?"
-                                confirm={() => run(build.id)} />}
+                            content="Start new build?"
+                            confirm={() => run(build.id)} />}
 
-                        <div className="flex flex-row my-5 px-5">
-                            <table className="table-auto mr-5">
-                                <thead>
-                                    <tr>
-                                        <th className="px-4 py-2">ID</th>
-                                        <th className="px-4 py-2">Status</th>
-                                        <th className="px-4 py-2">Started</th>
-                                        <th className="px-4 py-2">Finished</th>
-                                        <th className="px-4 py-2">Duration</th>
-                                        <th className="px-4 py-2">Actions</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {processes.map((process) => {
-                                        let end = Moment(process.finished_at);
-                                        let start = Moment(process.started_at);
-                                        let duration = Moment.duration(end.diff(start));
-                                        return (
-                                            <tr key={process.id}>
-                                                <td className="border px-4 py-2">{process.id}</td>
-                                                <td className="border px-4 py-2">{process.status}</td>
-                                                <td className="border px-4 py-2">{Moment(process.started_at).format('DD.MM.YYYY HH:mm:ss')}</td>
+                    <div className="flex flex-row my-5 px-5">
+                        <table className="table-auto mr-5">
+                            <thead>
+                                <tr>
+                                    <th className="px-4 py-2">ID</th>
+                                    <th className="px-4 py-2">Status</th>
+                                    <th className="px-4 py-2">Started</th>
+                                    <th className="px-4 py-2">Finished</th>
+                                    <th className="px-4 py-2">Duration</th>
+                                    <th className="px-4 py-2">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {processes.map((process) => {
+                                    let end = Moment(process.finished_at);
+                                    let start = Moment(process.started_at);
+                                    let duration = Moment.duration(end.diff(start));
+                                    return (
+                                        <tr key={process.id}>
+                                            <td className="border px-4 py-2">{process.id}</td>
+                                            <td className="border px-4 py-2">{process.status}</td>
+                                            <td className="border px-4 py-2">{Moment(process.started_at).format('DD.MM.YYYY HH:mm:ss')}</td>
 
-                                                <td className="border px-4 py-2">{Moment(process.finished_at).format('DD.MM.YYYY HH:mm:ss')}</td>
-                                                <td className="border px-4 py-2">{(duration.asMinutes()).toFixed(2)} minutes</td>
-                                                <td className="border px-4 py-2">
-                                                    <Button variant="contained" onClick={() => viewOutput(process.output)}>View</Button>
-                                                </td>
-                                            </tr>
-                                        )
-                                    })}
-                                </tbody>
-                            </table>
-                            <div class="bg-slate-600 text-white p-3 overflow-scroll w-full h-96"  >
-                                <pre >
-                                    {output}
-                                </pre>
-                            </div>
+                                            <td className="border px-4 py-2">{Moment(process.finished_at).format('DD.MM.YYYY HH:mm:ss')}</td>
+                                            <td className="border px-4 py-2">{(duration.asMinutes()).toFixed(2)} minutes</td>
+                                            <td className="border px-4 py-2">
+                                                <Button variant="contained" onClick={() => viewOutput(process.output)}>View</Button>
+                                            </td>
+                                        </tr>
+                                    )
+                                })}
+                            </tbody>
+                        </table>
+                        <div class="bg-slate-600 text-white p-3 overflow-scroll w-full h-96"  >
+                            <pre >
+                                {output}
+                            </pre>
                         </div>
                     </div>
+                </div>
 
 
-                }
+
             </form>
 
         </div>
