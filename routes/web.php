@@ -47,8 +47,10 @@ Route::post("/settings/updateCodeServer", "SettingsController@updateCodeServerCo
 //Builds
 Route::get("/builds", "BuildController@index")->name("builds.index")->middleware('auth');
 Route::post("/builds/update", "BuildController@update")->name("builds.update")->middleware('auth');
-Route::delete("/builds/{build}", "BuildController@destroy")->name("builds.destroy")->middleware('auth');
-
+Route::post("/builds/all", "BuildController@all")->name("builds.all")->middleware('auth');
+Route::post("/builds/run", "BuildController@run")->name("builds.run")->middleware('auth');
+Route::post("/builds/delete", "BuildController@delete")->name("builds.delete")->middleware('auth');
+Route::post("/builds/getProcesses", "BuildController@getProcesses")->name("builds.getProcesses")->middleware('auth');
 //BuildProcesses by Build
 Route::get("/builds/{build}/buildprocesses", "BuildProcessesController@index")->name("buildprocesses.index")->middleware('auth');
 

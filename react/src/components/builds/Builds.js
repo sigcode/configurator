@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { setBuilds } from './store/slices/BuildSlice';
+import { setBuilds, setCurrentBuild, getData } from './store/slices/BuildSlice';
 import { styled } from '@mui/material/styles';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -11,11 +11,12 @@ import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import TablePagination from '@mui/material/TablePagination';
 import Moment from 'moment';
-import { Button, Stack } from '@mui/material';
+import { Button } from '@mui/material';
 import SingleBuild from './SingleBuild';
+import { AddTask } from '@mui/icons-material';
 export default function Builds(props) {
     const [showTable, setShowTable] = useState(true);
-    const [currentBuild, setCurrentBuild] = useState(null);
+
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(10);
     const dispatch = useDispatch();
@@ -49,11 +50,17 @@ export default function Builds(props) {
 
 
     const openBuild = (build) => {
-        setCurrentBuild(build);
+        dispatch(setCurrentBuild(build));
+        setShowTable(false);
+    };
+
+    const newBuild = () => {
+        dispatch(setCurrentBuild(null));
         setShowTable(false);
     };
 
     const backToTable = () => {
+        dispatch(getData());
         setShowTable(true);
         setCurrentBuild(null);
     };
@@ -62,7 +69,10 @@ export default function Builds(props) {
         <div>
             {showTable ? (
                 <>
-                    <h1>Builds</h1>
+                    <div class="flex flex-row justify-between my-2">
+                        <h1>Builds</h1>
+                        <Button variant="contained" color="tertiary" onClick={() => newBuild()}><AddTask className="mr-2" /> New Build</Button>
+                    </div>
                     <TableContainer component={Paper}>
                         <Table sx={{ minWidth: 650 }} aria-label="simple table">
                             <TableHead>
@@ -71,6 +81,7 @@ export default function Builds(props) {
                                     <StyledTableCell align="right">Repo URL</StyledTableCell>
                                     <StyledTableCell align="right">Repo Branch</StyledTableCell>
                                     <StyledTableCell align="right">Deployment Path</StyledTableCell>
+                                    <StyledTableCell align="right">Build Type</StyledTableCell>
                                     <StyledTableCell align="right">Updated At</StyledTableCell>
                                     <StyledTableCell align="right">Actions</StyledTableCell>
                                 </TableRow>
@@ -89,6 +100,7 @@ export default function Builds(props) {
                                                 <TableCell align="right">{build.repo_url}</TableCell>
                                                 <TableCell align="right">{build.repo_branch}</TableCell>
                                                 <TableCell align="right">{build.deployment_path}</TableCell>
+                                                <TableCell align="right">{build.build_type}</TableCell>
                                                 <TableCell align="right">{Moment(build.updated_at).format('DD.MM.YYYY hh:mm:ss')}</TableCell>
                                                 <TableCell align="right"><Button variant='contained'
                                                     onClick={() => openBuild(build.id)}>Edit</Button>
@@ -116,7 +128,7 @@ export default function Builds(props) {
                     />
                 </>
             ) : (
-                <SingleBuild id={currentBuild} back={() => backToTable()} />
+                <SingleBuild back={() => backToTable()} />
             )}
         </div>
 

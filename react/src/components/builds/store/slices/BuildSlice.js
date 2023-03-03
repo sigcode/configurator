@@ -8,7 +8,9 @@ import axios from "axios";
 const BuildState = {
     builds: [],
     loading: false,
+    currentBuild: null,
     error: null,
+    processes: [],
 }
 
 export const getData = createAsyncThunk("Build/getData", (arg) => {
@@ -22,6 +24,13 @@ export const updateBuild = createAsyncThunk("Build/updateBuild", (arg) => {
         .post("/builds/update", arg)
         .then((res) => res.data);
 });
+
+export const getProcesses = createAsyncThunk("Build/getProcesses", (arg) => {
+    return axios
+        .post("/builds/getProcesses", arg)
+        .then((res) => res.data);
+})
+
 export const BuildSlice = createSlice({
     name: "Build",
     initialState: BuildState,
@@ -29,6 +38,10 @@ export const BuildSlice = createSlice({
         setBuilds: (state, action) => {
             state.builds = action.payload;
         },
+        setCurrentBuild: (state, action) => {
+            state.currentBuild = action.payload;
+        }
+
     },
     extraReducers: {
         [getData.pending]: (state) => {
@@ -40,7 +53,7 @@ export const BuildSlice = createSlice({
         },
         [getData.fulfilled]: (state, action) => {
             state.loading = false;
-            state.builds = action.payload.available;
+            state.builds = action.payload;
         },
         [updateBuild.pending]: (state) => {
             state.loading = true;
@@ -54,8 +67,24 @@ export const BuildSlice = createSlice({
             let data = action.payload;
             let builds = current(state.builds);
             let index = builds.findIndex((build) => build.id === data.id);
+            if (index == -1) {
+                state.builds.push(data);
+            }
+            state.currentBuild = data.id;
             state.builds[index] = data;
         },
+        [getProcesses.pending]: (state) => {
+            state.loading = true;
+        },
+        [getProcesses.rejected]: (state, action) => {
+            state.loading = false;
+            state.error = action.error.message;
+        },
+        [getProcesses.fulfilled]: (state, action) => {
+            state.loading = false;
+            state.processes = action.payload;
+        }
+
 
     },
     middleware: getDefaultMiddleware({
@@ -66,4 +95,4 @@ export const BuildSlice = createSlice({
     }),
 });
 
-export const { setBuilds } = BuildSlice.actions;
+export const { setBuilds, setCurrentBuild } = BuildSlice.actions;

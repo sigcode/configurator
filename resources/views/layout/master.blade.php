@@ -14,7 +14,7 @@
     <script src="/Semantic-UI-CSS-master/semantic.min.js"></script>
     <script src="/js/app.js"></script>
     <script src="/js/reactCompiled.js"></script>
-    <title>Codesrv Conf</title>
+    <title>Kselp Deployment</title>
 </head>
 
 <body>

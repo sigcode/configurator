@@ -26,10 +26,8 @@ class CreateBuildsTable extends Migration
             $table->id();
             $table->timestamps();
             $table->unsignedBigInteger('build_id');
-            $table->unique(['build_id']);
+            $table->integer('build_id');
             $table->text("output");
-            $table->boolean("success")->default(false);
-            $table->boolean("finished")->default(false);
             $table->string("command");
             $table->foreign('build_id')->references('id')->on('builds')->onDelete('cascade');
         });

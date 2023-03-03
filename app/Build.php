@@ -17,4 +17,9 @@ class Build extends Model
     protected $fillable = [
         'repo_name', 'repo_url', 'repo_branch', 'deployment_path', 'has_submodules',
     ];
+
+    public function buildProcesses()
+    {
+        return $this->hasMany(BuildProcess::class);
+    }
 }
