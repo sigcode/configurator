@@ -9,6 +9,7 @@ const BuildState = {
     builds: [],
     loading: false,
     currentBuild: null,
+    runningBuild: null,
     error: null,
     processes: [],
 }
@@ -31,6 +32,8 @@ export const getProcesses = createAsyncThunk("Build/getProcesses", (arg) => {
         .then((res) => res.data);
 })
 
+
+
 export const BuildSlice = createSlice({
     name: "Build",
     initialState: BuildState,
@@ -40,7 +43,11 @@ export const BuildSlice = createSlice({
         },
         setCurrentBuild: (state, action) => {
             state.currentBuild = action.payload;
+        },
+        setRunningBuild: (state, action) => {
+            state.runningBuild = action.payload;
         }
+
 
     },
     extraReducers: {
@@ -86,6 +93,7 @@ export const BuildSlice = createSlice({
         }
 
 
+
     },
     middleware: getDefaultMiddleware({
         serializableCheck: {
@@ -95,4 +103,4 @@ export const BuildSlice = createSlice({
     }),
 });
 
-export const { setBuilds, setCurrentBuild } = BuildSlice.actions;
+export const { setBuilds, setCurrentBuild, setRunningBuild } = BuildSlice.actions;

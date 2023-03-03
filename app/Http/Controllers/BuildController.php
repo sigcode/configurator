@@ -58,6 +58,8 @@ class BuildController extends Controller
 
     public function run(Request $request)
     {
+        ini_set('max_execution_time', 0);
+        session_write_close();
         $build = Build::find($request->id);
         $type = $build->build_type;
         $process = new BuildProcess();

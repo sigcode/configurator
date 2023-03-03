@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Button, Checkbox, TextField, FormControl, FormControlLabel, FormGroup, InputLabel, Select, MenuItem } from '@mui/material';
 import { useSelector, useDispatch } from 'react-redux';
-import { getData, getProcesses, updateBuild } from './store/slices/BuildSlice.js';
+import { getData, getProcesses, setRunningBuild, updateBuild } from './store/slices/BuildSlice.js';
 import Moment from 'moment';
 import ConfirmDialog from '../vhosts/components/Dialog.js';
 import { DirectionsRun, WarningSharp } from '@mui/icons-material';
@@ -20,6 +20,7 @@ export default function SingleBuild(props) {
     const processes = useSelector((state) => state.Build.processes);
     const loading = useSelector((state) => state.Build.loading);
     const buildId = useSelector((state) => state.Build.currentBuild);
+    const runningBuild = useSelector((state) => state.Build.runningBuild);
     //find build
     let build = builds.find((build) => build.id == buildId);
     if (build == undefined) {
@@ -63,12 +64,26 @@ export default function SingleBuild(props) {
         }
     }, []);
 
+
+    const reCheckBuild = () => {
+        dispatch(getProcesses({ id: buildId }));
+    };
+
+    useEffect(() => {
+        let lastProcess = processes[processes.length - 1];
+        if (lastProcess != undefined) {
+            setOutput(lastProcess.output);
+        }
+    }, [processes]);
+
     const run = (id) => {
+        dispatch(setRunningBuild(id));
         const data = {
             id: id,
         };
         axios.post('/builds/run', data).then((response) => {
             dispatch(getProcesses({ id: buildId }));
+            dispatch(setRunningBuild(null));
         });
     }
 
@@ -145,16 +160,7 @@ export default function SingleBuild(props) {
                 <div className="flex flex-row my-5">
                     {build.id > 0 ?
                         <>
-                            <Button variant="contained" onClick={() => update()}>Update</Button>
-                            <ConfirmDialog
-                                startIcon={<DirectionsRun />}
-                                color="secondary"
-                                sx={{ marginLeft: "10px" }}
-                                buttonText="Run"
-                                title=""
-                                variant="contained"
-                                content="Start new build?"
-                                confirm={() => run(build.id)} />
+                            <Button variant="contained" onClick={() => update()}>Save</Button>
                             <ConfirmDialog
                                 startIcon={<WarningSharp />}
                                 color="error"
@@ -172,8 +178,25 @@ export default function SingleBuild(props) {
 
                 {loading ? <p>Loading...</p> :
 
-                    <div>
+                    <div class="mt-10">
                         <h2>Processes</h2>
+                        {runningBuild == build.id ?
+                            <>
+                                <Button variant="contained" sx={{ marginLeft: "10px" }} disabled>Running</Button>
+                                <Button variant="contained" sx={{ marginLeft: "10px" }} onClick={() => reCheckBuild()}>Recheck Build Status</Button>
+                            </>
+                            :
+                            <ConfirmDialog
+                                startIcon={<DirectionsRun />}
+                                color="secondary"
+                                sx={{ marginLeft: "10px" }}
+                                buttonText="Run new Build"
+                                title=""
+                                variant="contained"
+
+                                content="Start new build?"
+                                confirm={() => run(build.id)} />}
+
                         <div className="flex flex-row my-5 px-5">
                             <table className="table-auto mr-5">
                                 <thead>
