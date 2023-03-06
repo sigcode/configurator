@@ -14,7 +14,7 @@ class AddToBuildsprocesstable extends Migration
     public function up()
     {
         Schema::table('build_processes', function (Blueprint $table) {
-            $table->enum("status", ["pending", "running", "success", "failed"])->default("pending");
+            $table->enum("status", ["pending", "running", "success", "failed", "queued"])->default("pending");
             $table->dateTime("started_at")->nullable();
             $table->dateTime("finished_at")->nullable();
         });

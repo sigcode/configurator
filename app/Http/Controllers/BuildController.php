@@ -37,6 +37,7 @@ class BuildController extends Controller
         $build->deployment_path = $request->deployment_path == null ? '' : $request->deployment_path;
         $build->has_submodules = $request->has_submodules;
         $build->build_target = $request->build_target == null ? '' : $request->build_target;
+        $build->build_key = $request->build_key == null ? '' : $request->build_key;
         $build->build_type = $request->build_type == null ? 'ant' : $request->build_type;
         $build->save();
         return json_encode($build);
@@ -56,20 +57,31 @@ class BuildController extends Controller
         return json_encode(['status' => 'deleted']);
     }
 
-    public function run(Request $request)
+    public function run(Request $request, BuildProcess $process = null)
     {
+        $processes = $this->findRunningProcesses($request->id);
+        if ($processes->count() > 0) {
+            $this->queueProcess($request->id);
+            return json_encode(['status' => 'queued']);
+        } else if ($process != null) {
+            $process->status = 'running';
+            $process->started_at = date('Y-m-d H:i:s');
+            $process->output = 'Build started at ' . $process->started_at . "\n";
+            $process->command = "";
+            $process->save();
+        } else {
+            $build = Build::find($request->id);
+            $type = $build->build_type;
+            $process = new BuildProcess();
+            $process->build_id = $build->id;
+            $process->status = 'running';
+            $process->started_at = date('Y-m-d H:i:s');
+            $process->output = 'Build started at ' . $process->started_at . "\n";
+            $process->command = "";
+            $process->save();
+        }
         ini_set('max_execution_time', 0);
         session_write_close();
-        $build = Build::find($request->id);
-        $type = $build->build_type;
-        $process = new BuildProcess();
-        $process->build_id = $build->id;
-        $process->status = 'running';
-        $process->started_at = date('Y-m-d H:i:s');
-        $process->output = 'Build started at ' . $process->started_at . "\n";
-        $process->status = 'pending';
-        $process->command = "";
-        $process->save();
         switch ($type) {
             case 'git':
                 $createFolderAndGoToIt = 'mkdir -p ' . $build->deployment_path . ' && cd ' . $build->deployment_path;
@@ -111,7 +123,45 @@ class BuildController extends Controller
         $process->status = 'success';
         $process->finished_at = date('Y-m-d H:i:s');
         $process->save();
+        $this->runQueue($request->id);
+        return json_encode(['status' => 'success']);
+    }
 
-        return json_encode(['status' => 'running']);
+    private function runQueue($buildId)
+    {
+        $process = BuildProcess::where('build_id', $buildId)->where('status', 'queued')->first();
+        if ($process != null) {
+            $request = new Request();
+            $request->id = $buildId;
+            $this->run($request, $process);
+        }
+    }
+
+    private function queueProcess($buildId)
+    {
+        $process = new BuildProcess();
+        $process->build_id = $buildId;
+        $process->status = 'queued';
+        $process->save();
+    }
+
+    private function findRunningProcesses($buildId)
+    {
+        $processes = BuildProcess::where('build_id', $buildId)->where('status', 'running')->get();
+        return $processes;
+    }
+
+
+    public function hook(Request $request)
+    {
+        $build = Build::where('build_key', $request->key);
+        if ($build->count() > 0) {
+            $build = $build->first();
+            $request->id = $build->id;
+            $this->run($request);
+            return json_encode(['status' => 'running']);
+        } else {
+            return json_encode(['status' => 'error']);
+        }
     }
 }

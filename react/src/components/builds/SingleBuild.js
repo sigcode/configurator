@@ -1,10 +1,11 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Button, Checkbox, TextField, FormControl, FormControlLabel, FormGroup, InputLabel, Select, MenuItem } from '@mui/material';
+import { Button, Checkbox, TextField, FormControl, FormControlLabel, FormGroup, InputLabel, Select, MenuItem, InputAdornment, IconButton } from '@mui/material';
 import { useSelector, useDispatch } from 'react-redux';
 import { getData, getProcesses, setRunningBuild, updateBuild } from './store/slices/BuildSlice.js';
 import Moment from 'moment';
 import ConfirmDialog from '../vhosts/components/Dialog.js';
 import { DirectionsRun, WarningSharp } from '@mui/icons-material';
+import { Casino } from '@mui/icons-material';
 import axios from 'axios';
 export default function SingleBuild(props) {
 
@@ -14,6 +15,7 @@ export default function SingleBuild(props) {
     const repo_branch_ref = useRef();
     const deployment_path_ref = useRef();
     const build_target_ref = useRef();
+    const build_key_ref = useRef();
 
     //selectors
     const builds = useSelector((state) => state.Build.builds);
@@ -30,6 +32,7 @@ export default function SingleBuild(props) {
         build.repo_url = '';
         build.repo_branch = '';
         build.deployment_path = '';
+        build.build_key = '';
         build.has_submodules = false;
         build.build_target = '';
         build.build_type = '';
@@ -53,6 +56,7 @@ export default function SingleBuild(props) {
             deployment_path: deployment_path_ref.current.value,
             has_submodules: has_submodules,
             build_target: build_target_ref.current.value,
+            build_key: build_key_ref.current.value,
             build_type: build_type,
         };
         dispatch(updateBuild(data));
@@ -72,12 +76,12 @@ export default function SingleBuild(props) {
         dispatch(getProcesses({ id: buildId }));
     };
 
-    // useEffect(() => {
-    //     let lastProcess = processes[processes.length - 1];
-    //     if (lastProcess != undefined) {
-    //         setOutput(lastProcess.output);
-    //     }
-    // }, [processes]);
+    const generateKey = (e) => {
+        e.preventDefault();
+        //hash key
+        const hash = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+        build_key_ref.current.value = hash;
+    }
 
     const run = (id) => {
         dispatch(setRunningBuild(id));
@@ -134,6 +138,29 @@ export default function SingleBuild(props) {
                 <div className="flex flex-row my-5">
                     <FormControl fullWidth sx={{ m: 1 }}>
                         <TextField id="build_target" label="Build Target" name="build_target" defaultValue={build.build_target} inputRef={build_target_ref} />
+                    </FormControl>
+                </div>
+                <div className="flex flex-row my-5">
+                    <FormControl fullWidth sx={{ m: 1 }}>
+                        <TextField id="build_key" label="Build Key" name="build_key"
+                            defaultValue={build.build_key}
+                            inputRef={build_key_ref}
+                            value={build_key_ref.current ? build_key_ref.current.value : build.build_key}
+                            InputProps={{
+                                endAdornment: (
+                                    <InputAdornment position="end">
+                                        <Button
+                                            variant="outlined"
+                                            onClick={(e) => generateKey(e)}
+                                            onMouseDown={(e) => e.preventDefault()}
+                                            edge="end"
+                                        >
+                                            <Casino /> Generate
+                                        </Button>
+                                    </InputAdornment>
+                                ),
+                            }}
+                        />
                     </FormControl>
                 </div>
                 <div className="flex flex-row my-5">
