@@ -142,7 +142,7 @@ export default function VhostList() {
                                         <ConfirmDialog
                                             variant="outlined"
                                             color="tertiary"
-                                            onClick={() => runCertbot(vhost)}
+                                            confirm={() => runCertbot(vhost)}
                                             sx={{ marginLeft: "10px" }}
                                             startIcon={<SmartToyIcon />}
                                             buttonText="Run Certbot"

@@ -20,6 +20,6 @@ class Build extends Model
 
     public function buildProcesses()
     {
-        return $this->hasMany(BuildProcess::class);
+        return $this->hasMany(BuildProcess::class)->orderBy('created_at', 'desc');
     }
 }
