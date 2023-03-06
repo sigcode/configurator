@@ -13,4 +13,11 @@ class BuildProcessController extends Controller
         $buildprocesses = BuildProcess::where('build_id', $id)->get();
         return view('buildprocesses.index', compact('buildprocesses'));
     }
+
+    public function delete(Request $request)
+    {
+        $buildprocess = BuildProcess::find($request->id);
+        $buildprocess->delete();
+        return json_encode(['status' => 'deleted']);
+    }
 }

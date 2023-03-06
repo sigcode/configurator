@@ -50,6 +50,8 @@ Route::post("/builds/update", "BuildController@update")->name("builds.update")->
 Route::post("/builds/all", "BuildController@all")->name("builds.all")->middleware('auth');
 Route::post("/builds/run", "BuildController@run")->name("builds.run")->middleware('auth');
 Route::post("/builds/delete", "BuildController@delete")->name("builds.delete")->middleware('auth');
+Route::post("/builds/flushDeploymentPath", "BuildController@flushDeploymentPath")->name("builds.flushDeploymentPath")->middleware('auth');
+Route::post("/processes/delete", "BuildProcessController@delete")->name("processes.delete")->middleware('auth');
 Route::post("/builds/getProcesses", "BuildController@getProcesses")->name("builds.getProcesses")->middleware('auth');
 //BuildProcesses by Build
 Route::get("/builds/{build}/buildprocesses", "BuildProcessesController@index")->name("buildprocesses.index")->middleware('auth');

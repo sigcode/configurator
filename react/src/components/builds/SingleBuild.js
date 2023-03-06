@@ -4,11 +4,30 @@ import { useSelector, useDispatch } from 'react-redux';
 import { getData, getProcesses, setRunningBuild, updateBuild } from './store/slices/BuildSlice.js';
 import Moment from 'moment';
 import ConfirmDialog from '../vhosts/components/Dialog.js';
-import { DirectionsRun, WarningSharp } from '@mui/icons-material';
-import { Casino } from '@mui/icons-material';
+import { DirectionsRun, Preview, WarningSharp } from '@mui/icons-material';
+import { Casino, Delete } from '@mui/icons-material';
 import axios from 'axios';
+import Status from './components/Status.js';
+import { Stack } from '@mui/system';
+import Table from '@mui/material/Table';
+import TableBody from '@mui/material/TableBody';
+import { styled } from '@mui/material/styles';
+import TableCell, { tableCellClasses } from '@mui/material/TableCell';
+import TableContainer from '@mui/material/TableContainer';
+import TableHead from '@mui/material/TableHead';
+import TableRow from '@mui/material/TableRow';
+import Paper from '@mui/material/Paper';
 export default function SingleBuild(props) {
 
+    const StyledTableCell = styled(TableCell)(({ theme }) => ({
+        [`&.${tableCellClasses.head}`]: {
+            backgroundColor: theme.palette.common.black,
+            color: theme.palette.common.white,
+        },
+        [`&.${tableCellClasses.body}`]: {
+            fontSize: 14,
+        },
+    }));
     //refs
     const repo_name_ref = useRef();
     const repo_url_ref = useRef();
@@ -108,6 +127,26 @@ export default function SingleBuild(props) {
 
     }
 
+    const deleteProcess = (id) => {
+        const data = {
+            id: id,
+        };
+        axios.post('/processes/delete', data).then((response) => {
+        });
+    }
+
+    const flushDeploymentPath = (id) => {
+        const data = {
+            id: id,
+        };
+        axios.post('/builds/flushDeploymentPath', data).then((response) => {
+            if (response.data.status == 'success') {
+                alert('Deployment Path Flushed');
+            }
+        });
+    }
+
+
     return (
         <div>
             <Button variant="outlined" onClick={() => props.back()}>Back to Table</Button>
@@ -192,7 +231,7 @@ export default function SingleBuild(props) {
                         <>
                             <Button variant="contained" onClick={() => update()}>Save</Button>
                             <ConfirmDialog
-                                startIcon={<WarningSharp />}
+                                startIcon={<Delete />}
                                 color="error"
                                 sx={{ marginLeft: "10px" }}
                                 buttonText="Delete"
@@ -200,6 +239,17 @@ export default function SingleBuild(props) {
                                 variant="contained"
                                 content="Delete build?"
                                 confirm={() => deleteBuild(build.id)} />
+                            {build.deployment_path !== "" &&
+                                <ConfirmDialog
+                                    startIcon={<WarningSharp />}
+                                    color="error"
+                                    sx={{ marginLeft: "10px" }}
+                                    buttonText="Flush Deployment Path"
+                                    title=""
+                                    variant="outlined"
+                                    content="Flush deployment path?"
+                                    confirm={() => flushDeploymentPath(build.id)} />
+                            }
                         </>
                         :
                         <Button variant="contained" onClick={() => update()}>Create</Button>
@@ -226,39 +276,57 @@ export default function SingleBuild(props) {
                             content="Start new build?"
                             confirm={() => run(build.id)} />}
 
-                    <div className="flex flex-row my-5 px-5">
-                        <table className="table-auto mr-5">
-                            <thead>
-                                <tr>
-                                    <th className="px-4 py-2">ID</th>
-                                    <th className="px-4 py-2">Status</th>
-                                    <th className="px-4 py-2">Started</th>
-                                    <th className="px-4 py-2">Finished</th>
-                                    <th className="px-4 py-2">Duration</th>
-                                    <th className="px-4 py-2">Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {processes.map((process) => {
-                                    let end = Moment(process.finished_at);
-                                    let start = Moment(process.started_at);
-                                    let duration = Moment.duration(end.diff(start));
-                                    return (
-                                        <tr key={process.id}>
-                                            <td className="border px-4 py-2">{process.id}</td>
-                                            <td className="border px-4 py-2">{process.status}</td>
-                                            <td className="border px-4 py-2">{Moment(process.started_at).format('DD.MM.YYYY HH:mm:ss')}</td>
+                    <div className="flex flex-row mx-5 my-5">
+                        <TableContainer component={Paper} sx={{ marginRight: "20px" }}>
+                            <Table sx={{ minWidth: 650 }} aria-label="simple table">
+                                <TableHead>
+                                    <TableRow>
+                                        <StyledTableCell >ID</StyledTableCell>
+                                        <StyledTableCell >Status</StyledTableCell>
+                                        <StyledTableCell >Started</StyledTableCell>
+                                        <StyledTableCell >Finished</StyledTableCell>
+                                        <StyledTableCell >Duration</StyledTableCell>
+                                        <StyledTableCell >Actions</StyledTableCell>
+                                    </TableRow>
+                                </TableHead>
+                                <TableBody>
+                                    {processes.map((process) => {
+                                        let end = Moment(process.finished_at);
+                                        let start = Moment(process.started_at);
+                                        let duration = Moment.duration(end.diff(start));
+                                        return (
+                                            <tr key={process.id}>
+                                                <td className="border px-4 py-2">{process.id}</td>
+                                                <td className="border px-4 py-2"><Status status={process.status} /></td>
+                                                <td className="border px-4 py-2">{process.started_at !== null ? Moment(process.started_at).format('DD.MM.YYYY HH:mm:ss') : ""}</td>
 
-                                            <td className="border px-4 py-2">{Moment(process.finished_at).format('DD.MM.YYYY HH:mm:ss')}</td>
-                                            <td className="border px-4 py-2">{(duration.asMinutes()).toFixed(2)} minutes</td>
-                                            <td className="border px-4 py-2">
-                                                <Button variant="contained" onClick={() => viewOutput(process.output)}>View</Button>
-                                            </td>
-                                        </tr>
-                                    )
-                                })}
-                            </tbody>
-                        </table>
+                                                <td className="border px-4 py-2">{process.finished_at !== null ? Moment(process.finished_at).format('DD.MM.YYYY HH:mm:ss') : ""}</td>
+                                                <td className="border px-4 py-2">{process.finished_at !== null ? (duration.asMinutes()).toFixed(2) + " Minutes" : ""} </td>
+                                                <td className="border px-4 py-2">
+                                                    <Stack direction="column" spacing={2}>
+                                                        <Button
+                                                            sx={{ marginLeft: "10px" }}
+                                                            startIcon={<Preview />}
+                                                            size="small" variant="contained" onClick={() => viewOutput(process.output)}>View</Button>
+                                                        <ConfirmDialog
+                                                            startIcon={<Delete />}
+                                                            color="error"
+                                                            sx={{ marginLeft: "10px" }}
+                                                            buttonText="Delete"
+                                                            title=""
+                                                            variant="contained"
+                                                            size="small"
+                                                            content="Delete process?"
+                                                            confirm={() => deleteProcess(process.id)} />
+                                                    </Stack>
+
+                                                </td>
+                                            </tr>
+                                        )
+                                    })}
+                                </TableBody>
+                            </Table>
+                        </TableContainer>
                         <div class="bg-slate-600 text-white p-3 overflow-scroll w-full h-96"  >
                             <pre >
                                 {output}

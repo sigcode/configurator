@@ -64,6 +64,8 @@ class BuildController extends Controller
             $this->queueProcess($request->id);
             return json_encode(['status' => 'queued']);
         } else if ($process != null) {
+            $build = Build::find($request->id);
+            $type = $build->build_type;
             $process->status = 'running';
             $process->started_at = date('Y-m-d H:i:s');
             $process->output = 'Build started at ' . $process->started_at . "\n";
@@ -124,6 +126,15 @@ class BuildController extends Controller
         $process->finished_at = date('Y-m-d H:i:s');
         $process->save();
         $this->runQueue($request->id);
+        return json_encode(['status' => 'success']);
+    }
+
+
+    public function flushDeploymentPath(Request $request)
+    {
+        $build = Build::find($request->id);
+        $command = 'rm -rf ' . $build->deployment_path;
+        $output = shell_exec($command);
         return json_encode(['status' => 'success']);
     }
 
