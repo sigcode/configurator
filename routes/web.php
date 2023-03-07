@@ -62,3 +62,6 @@ Route::get("/builds/{build}/buildprocesses", "BuildProcessesController@index")->
 
 //BuildProcesses single
 Route::get("/buildprocesses/{buildprocess}", "BuildProcessesController@show")->name("buildprocesses.show")->middleware('auth');
+
+
+Route::get("/logout", "Auth\LoginController@logout")->name("logout");

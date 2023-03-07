@@ -27,6 +27,13 @@
      </a>
 
 
+
+
  </div>
 
+ <div class="ui vertical menu">
+     <a href="/logout" class="teal item">
+         Logout
+     </a>
+ </div>
  @endauth

@@ -329,7 +329,7 @@ export default function SingleBuild(props) {
                                 </TableBody>
                             </Table>
                         </TableContainer>
-                        <div class="bg-slate-600 text-white p-3 overflow-scroll w-full h-96"  >
+                        <div class="bg-slate-600 text-white p-3 overflow-scroll w-full h-96 preWrapped"  >
                             <pre >
                                 {output}
                             </pre>
