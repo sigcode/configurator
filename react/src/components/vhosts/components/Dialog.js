@@ -23,7 +23,7 @@ export default function ConfirmDialog(props) {
 
     return (
         <div>
-            <Button variant="outlined" {...props }  onClick={handleClickOpen}>
+            <Button variant="outlined" {...props} onClick={handleClickOpen}>
                 {props.buttonText}
             </Button>
             <Dialog
@@ -41,7 +41,7 @@ export default function ConfirmDialog(props) {
                     </DialogContentText>
                 </DialogContent>
                 <DialogActions>
-                    <Button variant="outline" onClick={handleClose}>Abbrechen</Button>
+                    <Button variant="outline" onClick={handleClose}>cancel</Button>
                     <Button variant="contained" color="error" onClick={confirm} autoFocus>
                         OK
                     </Button>

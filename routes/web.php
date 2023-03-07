@@ -42,7 +42,11 @@ Route::post('/vhosts/variousAjax', "VhostcliController@variousAjax")->name("vhos
 Route::get("/settings", "SettingsController@index")->name("settings.index");
 Route::post("/settings/updateCodeServer", "SettingsController@updateCodeServerConfig")->name("settings.update");
 
-
+// User
+Route::get("/users", "UserController@index")->name("users.index")->middleware('auth');
+Route::post("/users/update", "UserController@update")->name("users.update")->middleware('auth');
+Route::post("/users/destroy", "UserController@destroy")->name("users.destroy")->middleware('auth');
+Route::post("/users/all", "UserController@all")->name("users.all")->middleware('auth');
 
 //Builds
 Route::get("/builds", "BuildController@index")->name("builds.index")->middleware('auth');

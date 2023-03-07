@@ -18,6 +18,10 @@
          Builds
 
      </a>
+     <a href="/users" class="teal item {{ Request::path() === "users" ? "active" : "" }}">
+         Users
+
+     </a>
      <a href="/settings" class="teal item {{ Request::path() === "settings" ? "active" : "" }}">
          Settings
      </a>
