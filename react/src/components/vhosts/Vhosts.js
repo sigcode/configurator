@@ -107,7 +107,7 @@ export default function Vhosts() {
                             <Switch checked={"8.1" == phpversion} onClick={() => changePHPVersion("81")} />
                         } label="PHP 8.1" className="basis-1/3" />
                     </div>
-                    <div class="bg-slate-600 text-white p-3 overflow-scroll" id="consoleWrapper" >
+                    <div class="bg-slate-600 text-white p-3 overflow-scroll preWrapped" id="consoleWrapper" >
                         <pre >
                             {consoleContent}
                         </pre>

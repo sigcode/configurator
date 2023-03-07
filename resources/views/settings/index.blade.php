@@ -3,7 +3,7 @@
 @section('content')
 
 <div class="ui container">
-  <h1 class="ui huge header" style="margin-bottom: 1em">Settings</h1>
+    <h1 class="ui huge header" style="margin-bottom: 1em">Settings</h1>
     <div>
         <h2 class="ui dividing header">
             CodeServer
@@ -19,8 +19,8 @@
                 <label>Pfad:</label>
                 <input placeholder="Passwort" type="text" name="PATH" value="{{$codeServerConfig->PATH}}">
             </div>
-            <button class="ui submit button" type="submit">DO IT</button>
-        </form>    
+            <button class="ui submit button" type="submit">Save</button>
+        </form>
     </div>
 
 

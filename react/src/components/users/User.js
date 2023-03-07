@@ -52,6 +52,12 @@ export default function Users(props) {
         setCurrentUserId(id);
     }
 
+    const newUser = () => {
+        setShowTable(false);
+        setCurrentUserId(null);
+    }
+
+
     useEffect(() => {
         axios.post('/users/all').then((response) => {
             if (response.status === 200) {
@@ -69,7 +75,7 @@ export default function Users(props) {
                 <>
                     <div class="flex flex-row justify-between my-2">
                         <h1>User</h1>
-                        <Button variant="contained" color="tertiary" onClick={() => newBuild()}><AddTask className="mr-2" /> New User</Button>
+                        <Button variant="contained" color="tertiary" onClick={() => newUser()}><AddTask className="mr-2" /> New User</Button>
                     </div>
                     <TableContainer component={Paper}>
                         <Table sx={{ minWidth: 650 }} aria-label="simple table">

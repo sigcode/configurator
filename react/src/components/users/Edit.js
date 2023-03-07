@@ -6,7 +6,7 @@ import axios from 'axios';
 export default function Edit(props) {
     const userId = props.userId;
     let user = {};
-    if (userId === 0) {
+    if (userId === null) {
         user = {
             id: null,
             name: '',
