@@ -198,10 +198,16 @@ export default function SingleBuild(props) {
                     <FormControl fullWidth sx={{ m: 1 }}>
                         <TextField id="build_link" label="Build Link" name="build_link"
                             disabled={true}
+                            sx={{ backgroundColor: 'white', color: 'black' }}
                             variant="filled"
                             value={window.location.origin + '/api/builds/hook?key=' + build.build_key}
                             inputProps={{
                                 style: { color: 'black', fontWeight: 'bold', backgroundColor: 'white', textAlign: 'center' },
+                            }}
+                            InputProps={{
+                                LabelProps: {
+                                    style: { color: 'black', fontWeight: 'bold', backgroundColor: 'white', textAlign: 'center' },
+                                },
                             }}
                         />
                     </FormControl>

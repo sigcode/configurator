@@ -14,7 +14,12 @@ import Moment from 'moment';
 import { Button } from '@mui/material';
 import SingleBuild from './SingleBuild';
 import { AddTask } from '@mui/icons-material';
+import { Stack } from '@mui/system';
+import axios from 'axios';
+import BuildsAlert from './components/BuildsAlert';
 export default function Builds(props) {
+    const [open, setOpen] = React.useState(false);
+    const [buildName, setBuildName] = useState('');
     const [showTable, setShowTable] = useState(true);
 
     const [page, setPage] = useState(0);
@@ -37,6 +42,22 @@ export default function Builds(props) {
             fontSize: 14,
         },
     }));
+
+
+    const runBuild = (id, name) => {
+        setBuildName(name);
+        setOpen(true);
+        const data = {
+            id: id,
+        };
+        axios.post('/builds/run', data).then((response) => {
+
+        });
+        setTimeout(() => {
+            setOpen(false);
+            setBuildName('');
+        }, 3000);
+    }
 
     const handleChangePage = (event, newPage) => {
         event;
@@ -71,6 +92,7 @@ export default function Builds(props) {
                 <>
                     <div class="flex flex-row justify-between my-2">
                         <h1>Builds</h1>
+                        <BuildsAlert open={open} setOpen={setOpen} buildName={buildName} />
                         <Button variant="contained" color="tertiary" onClick={() => newBuild()}><AddTask className="mr-2" /> New Build</Button>
                     </div>
                     <TableContainer component={Paper}>
@@ -102,8 +124,14 @@ export default function Builds(props) {
                                                 <TableCell align="right">{build.deployment_path}</TableCell>
                                                 <TableCell align="right">{build.build_type}</TableCell>
                                                 <TableCell align="right">{Moment(build.updated_at).format('DD.MM.YYYY hh:mm:ss')}</TableCell>
-                                                <TableCell align="right"><Button variant='contained'
-                                                    onClick={() => openBuild(build.id)}>Edit</Button>
+                                                <TableCell align="right">
+                                                    <Stack direction="column" spacing={1}>
+                                                        <Button variant='contained' size="small"
+                                                            onClick={() => openBuild(build.id)}>Edit</Button>
+                                                        <Button variant='contained' size="small" color="secondary"
+                                                            onClick={() => runBuild(build.id, build.repo_name)}>Run</Button>
+
+                                                    </Stack>
                                                 </TableCell>
                                             </TableRow>
                                         );
