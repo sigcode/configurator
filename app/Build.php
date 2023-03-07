@@ -15,7 +15,7 @@ class Build extends Model
      * @var array
      */
     protected $fillable = [
-        'repo_name', 'repo_url', 'repo_branch', 'deployment_path', 'has_submodules',
+        'repo_name', 'repo_url', 'repo_branch', 'deployment_path', 'has_submodules', 'post_command', 'build_key'
     ];
 
     public function buildProcesses()

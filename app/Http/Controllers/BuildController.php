@@ -36,9 +36,8 @@ class BuildController extends Controller
         $build->repo_branch = $request->repo_branch == null ? 'master' : $request->repo_branch;
         $build->deployment_path = $request->deployment_path == null ? '' : $request->deployment_path;
         $build->has_submodules = $request->has_submodules;
-        $build->build_target = $request->build_target == null ? '' : $request->build_target;
         $build->build_key = $request->build_key == null ? '' : $request->build_key;
-        $build->build_type = $request->build_type == null ? 'ant' : $request->build_type;
+        $build->post_command = $request->post_command;
         $build->save();
         return json_encode($build);
     }
@@ -84,43 +83,43 @@ class BuildController extends Controller
         }
         ini_set('max_execution_time', 0);
         session_write_close();
-        switch ($type) {
-            case 'git':
-                $createFolderAndGoToIt = 'mkdir -p ' . $build->deployment_path . ' && cd ' . $build->deployment_path;
+        $createFolderAndGoToIt = 'mkdir -p ' . $build->deployment_path . ' && cd ' . $build->deployment_path;
 
-                $checkIfRepoExists = $createFolderAndGoToIt  . ' && if [ -d .git ]; then echo "true"; else echo "false"; fi';
-                $output = shell_exec($checkIfRepoExists);
-                $output = strval($output);
-                $process->output .= "Repo exists: " . ($output == "true\n" ? 'true' : 'false') . "\n";
-                $process->save();
+        $checkIfRepoExists = $createFolderAndGoToIt  . ' && if [ -d .git ]; then echo "true"; else echo "false"; fi';
+        $output = shell_exec($checkIfRepoExists);
+        $output = strval($output);
+        $process->output .= "Repo exists: " . ($output == "true\n" ? 'true' : 'false') . "\n";
+        $process->save();
 
-                $cloneRepo = 'git clone ' . $build->repo_url . ' .';
-                $pullAndCheckoutBranch = 'git pull && git checkout ' . $build->repo_branch;
+        $cloneRepo = 'git clone ' . $build->repo_url . ' .';
+        $pullAndCheckoutBranch = 'git pull && git checkout ' . $build->repo_branch;
 
-                if ($output == "true\n") {
-                    $command = $createFolderAndGoToIt . ' && ' . $pullAndCheckoutBranch;
-                    $output = shell_exec($command);
-                    $process->output .= $command . "\n";
-                    $process->output .= $output;
-                    $process->save();
-                } else {
-                    $command = $createFolderAndGoToIt . ' && ' . $cloneRepo . ' && ' . $pullAndCheckoutBranch;
-                    $output = shell_exec($command);
-                    $process->output .= $command . "\n";
-                    $process->output .= $output;
-                    $process->save();
-                }
-                if ($build->has_submodules == true) {
-                    $command =  $createFolderAndGoToIt . ' && git submodule update --init ';
-                    $output = shell_exec($command);
-                    $process->output .= $command . "\n";
-                    $process->output .= $output;
-                    $process->save();
-                }
-                break;
-            case 'ant':
-                $command = 'cd ' . $build->deployment_path . ' && ant ' . $build->build_target;
-                break;
+        if ($output == "true\n") {
+            $command = $createFolderAndGoToIt . ' && ' . $pullAndCheckoutBranch;
+            $output = shell_exec($command);
+            $process->output .= $command . "\n";
+            $process->output .= $output;
+            $process->save();
+        } else {
+            $command = $createFolderAndGoToIt . ' && ' . $cloneRepo . ' && ' . $pullAndCheckoutBranch;
+            $output = shell_exec($command);
+            $process->output .= $command . "\n";
+            $process->output .= $output;
+            $process->save();
+        }
+        if ($build->has_submodules == true) {
+            $command =  $createFolderAndGoToIt . ' && git submodule update --init ';
+            $output = shell_exec($command);
+            $process->output .= $command . "\n";
+            $process->output .= $output;
+            $process->save();
+        }
+        if ($build->post_command != null) {
+            $command = $createFolderAndGoToIt . ' && ' . $build->post_command;
+            $output = shell_exec($command);
+            $process->output .= $command . "\n";
+            $process->output .= $output;
+            $process->save();
         }
         $process->status = 'success';
         $process->finished_at = date('Y-m-d H:i:s');

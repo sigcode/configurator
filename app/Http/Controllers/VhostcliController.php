@@ -113,10 +113,10 @@ class VhostcliController extends Controller
         $vhost = str_replace(".conf", "", $vhost);
         $vhost .= ".sucv.de";
         if ($vhost != "") {
-            $cmd = "sudo certbot --apache -d $vhost";
+            $cmd = "sudo certbot --apache -d $vhost --non-interactive --agree-tos 2>&1";
         }
-        $out = shell_exec($cmd);
-        return ($out);
+        exec($cmd, $output, $return);
+        return ($output);
     }
 
 
@@ -124,9 +124,8 @@ class VhostcliController extends Controller
     {
         $content = request()->value;
         $name = request()->name;
-        $out = $this->saveVhost( $content, $name);
+        $out = $this->saveVhost($content, $name);
         return json_encode($out);
-
     }
 
     public function edit(string $param)

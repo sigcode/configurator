@@ -33,8 +33,8 @@ export default function SingleBuild(props) {
     const repo_url_ref = useRef();
     const repo_branch_ref = useRef();
     const deployment_path_ref = useRef();
-    const build_target_ref = useRef();
     const build_key_ref = useRef();
+    const post_command_ref = useRef();
 
     //selectors
     const builds = useSelector((state) => state.Build.builds);
@@ -53,15 +53,13 @@ export default function SingleBuild(props) {
         build.deployment_path = '';
         build.build_key = '';
         build.has_submodules = false;
-        build.build_target = '';
-        build.build_type = '';
+        build.post_command = '';
 
     }
     const dispatch = useDispatch();
 
     //state
     const [output, setOutput] = useState('');
-    const [build_type, setBuildType] = useState(build.build_type);
     const [has_submodules, setHasSubmodules] = useState(build.has_submodules);
 
 
@@ -74,9 +72,8 @@ export default function SingleBuild(props) {
             repo_branch: repo_branch_ref.current.value,
             deployment_path: deployment_path_ref.current.value,
             has_submodules: has_submodules,
-            build_target: build_target_ref.current.value,
             build_key: build_key_ref.current.value,
-            build_type: build_type,
+            post_command: post_command_ref.current.value,
         };
         dispatch(updateBuild(data));
     };
@@ -176,11 +173,6 @@ export default function SingleBuild(props) {
                 </div>
                 <div className="flex flex-row my-5">
                     <FormControl fullWidth sx={{ m: 1 }}>
-                        <TextField id="build_target" label="Build Target" name="build_target" defaultValue={build.build_target} inputRef={build_target_ref} />
-                    </FormControl>
-                </div>
-                <div className="flex flex-row my-5">
-                    <FormControl fullWidth sx={{ m: 1 }}>
                         <TextField id="build_key" label="Build Key" name="build_key"
                             defaultValue={build.build_key}
                             inputRef={build_key_ref}
@@ -202,20 +194,24 @@ export default function SingleBuild(props) {
                         />
                     </FormControl>
                 </div>
+                <div className="flex flex-row my-5 bg-white-100">
+                    <FormControl fullWidth sx={{ m: 1 }}>
+                        <TextField id="build_link" label="Build Link" name="build_link"
+                            disabled={true}
+                            variant="filled"
+                            value={window.location.origin + '/api/builds/hook?key=' + build.build_key}
+                            inputProps={{
+                                style: { color: 'black', fontWeight: 'bold', backgroundColor: 'white', textAlign: 'center' },
+                            }}
+                        />
+                    </FormControl>
+                </div>
                 <div className="flex flex-row my-5">
                     <FormControl fullWidth sx={{ m: 1 }}>
-                        <InputLabel id="build_type">Build Type</InputLabel>
-                        <Select
-                            labelId="build_type"
-                            id="build_type"
-                            name="build_type"
-                            defaultValue={build.build_type}
-                            label="Build Type"
-                            onChange={(e) => setBuildType(e.target.value)}
-                        >
-                            <MenuItem value="ant">Ant</MenuItem>
-                            <MenuItem value="git">Git</MenuItem>
-                        </Select>
+                        <TextField id="post_command" label="Post Command"
+                            multiline
+                            rows={4}
+                            name="post_command" defaultValue={build.post_command} inputRef={post_command_ref} />
                     </FormControl>
                 </div>
                 <div className="flex flex-row my-5">
