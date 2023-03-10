@@ -138,22 +138,22 @@ export default function Builds(props) {
                                     })}
                             </TableBody>
                         </Table>
+                        <TablePagination
+                            sx={{
+                                '.MuiTablePagination-selectLabel, .MuiTablePagination-displayedRows': {
+                                    margin: '0',
+                                    justifyContent: 'center',
+                                },
+                            }}
+                            rowsPerPageOptions={[5, 10, 25]}
+                            component="div"
+                            count={storeBuilds.length}
+                            rowsPerPage={rowsPerPage}
+                            page={page}
+                            onPageChange={handleChangePage}
+                            onRowsPerPageChange={handleChangeRowsPerPage}
+                        />
                     </TableContainer>
-                    <TablePagination
-                        sx={{
-                            '.MuiTablePagination-selectLabel, .MuiTablePagination-displayedRows': {
-                                margin: '0',
-                                justifyContent: 'center',
-                            },
-                        }}
-                        rowsPerPageOptions={[5, 10, 25]}
-                        component="div"
-                        count={storeBuilds.length}
-                        rowsPerPage={rowsPerPage}
-                        page={page}
-                        onPageChange={handleChangePage}
-                        onRowsPerPageChange={handleChangeRowsPerPage}
-                    />
                 </>
             ) : (
                 <SingleBuild back={() => backToTable()} />

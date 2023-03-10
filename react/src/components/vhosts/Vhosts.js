@@ -9,6 +9,7 @@ import ChildModal from './components/Modal.js';
 import { Input, TextField } from '@mui/material';
 import { create } from '@mui/material/styles/createTransitions.js';
 import { createVoid } from 'typescript';
+import Paper from '@mui/material/Paper';
 export default function Vhosts() {
     const dispatch = useDispatch();
     const vhostNameRef = useRef();
@@ -107,11 +108,14 @@ export default function Vhosts() {
                             <Switch checked={"8.1" == phpversion} onClick={() => changePHPVersion("81")} />
                         } label="PHP 8.1" className="basis-1/3" />
                     </div>
-                    <div class="bg-slate-600 text-white p-3 overflow-scroll preWrapped" id="consoleWrapper" >
-                        <pre >
-                            {consoleContent}
+                    <Paper elevation={1} className=" text-white p-3  w-full " style={{ height: "500px" }} >
+                        <pre className="break-words overflow-y-auto" style={{ whiteSpace: 'pre-wrap', wordWrap: 'break-word' }}>
+                            <code>
+                                {consoleContent}
+                            </code>
                         </pre>
-                    </div>
+
+                    </Paper>
 
                 </div>
             </div>

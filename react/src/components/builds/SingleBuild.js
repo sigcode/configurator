@@ -38,7 +38,7 @@ export default function SingleBuild(props) {
     const post_command_ref = useRef();
 
     const [page, setPage] = useState(0);
-    const [rowsPerPage, setRowsPerPage] = useState(10);
+    const [rowsPerPage, setRowsPerPage] = useState(5);
     const handleChangePage = (event, newPage) => {
         event;
         setPage(newPage);
@@ -293,7 +293,7 @@ export default function SingleBuild(props) {
                     <div className="flex flex-row mx-5 my-5">
                         <>
                             <TableContainer component={Paper} sx={{ marginRight: "20px" }}>
-                                <Table sx={{ minWidth: 650 }} aria-label="simple table">
+                                <Table aria-label="simple table">
                                     <TableHead>
                                         <TableRow>
                                             <StyledTableCell >ID</StyledTableCell>
@@ -358,13 +358,14 @@ export default function SingleBuild(props) {
                                 />
                             </TableContainer>
                         </>
-                        <div class="bg-slate-600 text-white p-3 overflow-x-clip overflow-y-scroll  w-full " style={{ height: "800px" }} >
-                            <pre className="break-words" style={{ whiteSpace: 'pre-wrap', wordWrap: 'break-word' }}>
+                        <Paper elevation={1} className=" text-white p-3  w-full " style={{ height: "500" }} >
+                            <pre className="break-words overflow-y-auto" style={{ whiteSpace: 'pre-wrap', wordWrap: 'break-word' }}>
                                 <code>
                                     {output}
                                 </code>
                             </pre>
-                        </div>
+
+                        </Paper>
                     </div>
                 </div>
 
