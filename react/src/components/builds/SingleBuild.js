@@ -15,6 +15,7 @@ import { styled } from '@mui/material/styles';
 import TableCell, { tableCellClasses } from '@mui/material/TableCell';
 import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
+import TablePagination from '@mui/material/TablePagination';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 export default function SingleBuild(props) {
@@ -36,6 +37,17 @@ export default function SingleBuild(props) {
     const build_key_ref = useRef();
     const post_command_ref = useRef();
 
+    const [page, setPage] = useState(0);
+    const [rowsPerPage, setRowsPerPage] = useState(10);
+    const handleChangePage = (event, newPage) => {
+        event;
+        setPage(newPage);
+    };
+
+    const handleChangeRowsPerPage = (event) => {
+        setRowsPerPage(parseInt(event.target.value, 10));
+        setPage(0);
+    };
     //selectors
     const builds = useSelector((state) => state.Build.builds);
     const processes = useSelector((state) => state.Build.processes);
@@ -279,59 +291,78 @@ export default function SingleBuild(props) {
                             confirm={() => run(build.id)} />}
 
                     <div className="flex flex-row mx-5 my-5">
-                        <TableContainer component={Paper} sx={{ marginRight: "20px" }}>
-                            <Table sx={{ minWidth: 650 }} aria-label="simple table">
-                                <TableHead>
-                                    <TableRow>
-                                        <StyledTableCell >ID</StyledTableCell>
-                                        <StyledTableCell >Status</StyledTableCell>
-                                        <StyledTableCell >Started</StyledTableCell>
-                                        <StyledTableCell >Finished</StyledTableCell>
-                                        <StyledTableCell >Duration</StyledTableCell>
-                                        <StyledTableCell >Actions</StyledTableCell>
-                                    </TableRow>
-                                </TableHead>
-                                <TableBody>
-                                    {processes.map((process) => {
-                                        let end = Moment(process.finished_at);
-                                        let start = Moment(process.started_at);
-                                        let duration = Moment.duration(end.diff(start));
-                                        return (
-                                            <tr key={process.id}>
-                                                <td className="border px-4 py-2">{process.id}</td>
-                                                <td className="border px-4 py-2"><Status status={process.status} /></td>
-                                                <td className="border px-4 py-2">{process.started_at !== null ? Moment(process.started_at).format('DD.MM.YYYY HH:mm:ss') : ""}</td>
+                        <>
+                            <TableContainer component={Paper} sx={{ marginRight: "20px" }}>
+                                <Table sx={{ minWidth: 650 }} aria-label="simple table">
+                                    <TableHead>
+                                        <TableRow>
+                                            <StyledTableCell >ID</StyledTableCell>
+                                            <StyledTableCell >Status</StyledTableCell>
+                                            <StyledTableCell >Started</StyledTableCell>
+                                            <StyledTableCell >Finished</StyledTableCell>
+                                            <StyledTableCell >Duration</StyledTableCell>
+                                            <StyledTableCell >Actions</StyledTableCell>
+                                        </TableRow>
+                                    </TableHead>
+                                    <TableBody>
+                                        {processes.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((process) => {
+                                            let end = Moment(process.finished_at);
+                                            let start = Moment(process.started_at);
+                                            let duration = Moment.duration(end.diff(start));
+                                            return (
+                                                <tr key={process.id}>
+                                                    <td className="border px-4 py-2">{process.id}</td>
+                                                    <td className="border px-4 py-2"><Status status={process.status} /></td>
+                                                    <td className="border px-4 py-2">{process.started_at !== null ? Moment(process.started_at).format('DD.MM.YYYY HH:mm:ss') : ""}</td>
 
-                                                <td className="border px-4 py-2">{process.finished_at !== null ? Moment(process.finished_at).format('DD.MM.YYYY HH:mm:ss') : ""}</td>
-                                                <td className="border px-4 py-2">{process.finished_at !== null ? (duration.asMinutes()).toFixed(2) + " Minutes" : ""} </td>
-                                                <td className="border px-4 py-2">
-                                                    <Stack direction="column" spacing={2}>
-                                                        <Button
-                                                            sx={{ marginLeft: "10px" }}
-                                                            startIcon={<Preview />}
-                                                            size="small" variant="contained" onClick={() => viewOutput(process.output)}>View</Button>
-                                                        <ConfirmDialog
-                                                            startIcon={<Delete />}
-                                                            color="error"
-                                                            sx={{ marginLeft: "10px" }}
-                                                            buttonText="Delete"
-                                                            title=""
-                                                            variant="contained"
-                                                            size="small"
-                                                            content="Delete process?"
-                                                            confirm={() => deleteProcess(process.id)} />
-                                                    </Stack>
+                                                    <td className="border px-4 py-2">{process.finished_at !== null ? Moment(process.finished_at).format('DD.MM.YYYY HH:mm:ss') : ""}</td>
+                                                    <td className="border px-4 py-2">{process.finished_at !== null ? (duration.asMinutes()).toFixed(2) + " Minutes" : ""} </td>
+                                                    <td className="border px-4 py-2">
+                                                        <Stack direction="column" spacing={2}>
+                                                            <Button
+                                                                sx={{ marginLeft: "10px" }}
+                                                                startIcon={<Preview />}
+                                                                size="small" variant="contained" onClick={() => viewOutput(process.output)}>View</Button>
+                                                            <ConfirmDialog
+                                                                startIcon={<Delete />}
+                                                                color="error"
+                                                                sx={{ marginLeft: "10px" }}
+                                                                buttonText="Delete"
+                                                                title=""
+                                                                variant="contained"
+                                                                size="small"
+                                                                content="Delete process?"
+                                                                confirm={() => deleteProcess(process.id)} />
+                                                        </Stack>
 
-                                                </td>
-                                            </tr>
-                                        )
-                                    })}
-                                </TableBody>
-                            </Table>
-                        </TableContainer>
-                        <div class="bg-slate-600 text-white p-3 overflow-scroll w-full h-96 preWrapped"  >
-                            <pre >
-                                {output}
+                                                    </td>
+                                                </tr>
+                                            )
+                                        })}
+                                    </TableBody>
+                                </Table>
+                                <TablePagination
+                                    sx={{
+                                        '.MuiTablePagination-selectLabel, .MuiTablePagination-displayedRows': {
+                                            margin: '0',
+                                            justifyContent: 'center',
+                                        },
+                                    }}
+                                    rowsPerPageOptions={[5, 10, 25]}
+                                    component="div"
+                                    count={processes.length}
+                                    rowsPerPage={rowsPerPage}
+                                    page={page}
+                                    onPageChange={handleChangePage}
+                                    onRowsPerPageChange={handleChangeRowsPerPage}
+                                />
+                            </TableContainer>
+                        </>
+                        <div class="bg-slate-600 text-white p-3 overflow-x-clip overflow-y-scroll  w-full " style={{ height: "800px" }} >
+                            <pre className="break-words" style={{ whiteSpace: 'pre-wrap', wordWrap: 'break-word' }}>
+                                <code>
+                                    {output}
+                                </code>
                             </pre>
                         </div>
                     </div>
