@@ -63,5 +63,19 @@ Route::get("/builds/{build}/buildprocesses", "BuildProcessesController@index")->
 //BuildProcesses single
 Route::get("/buildprocesses/{buildprocess}", "BuildProcessesController@show")->name("buildprocesses.show")->middleware('auth');
 
+//Tests
+Route::get("/tests", "TestController@index")->name("tests.index")->middleware('auth');
 
+Route::post("/tests/update", "TestController@update")->name("tests.update")->middleware('auth');
+Route::post("/tests/all", "TestController@all")->name("tests.all")->middleware('auth');
+Route::post("/tests/run", "TestController@run")->name("tests.run")->middleware('auth');
+Route::post("/tests/delete", "TestController@delete")->name("tests.delete")->middleware('auth');
+Route::post("/tests/flushDeploymentPath", "TestController@flushDeploymentPath")->name("tests.flushDeploymentPath")->middleware('auth');
+Route::post("/processes/delete", "TestProcessController@delete")->name("processes.delete")->middleware('auth');
+Route::post("/tests/getProcesses", "TestController@getProcesses")->name("tests.getProcesses")->middleware('auth');
+//TestProcesses by Test
+Route::get("/tests/{build}/buildprocesses", "TestProcessesController@index")->name("buildprocesses.index")->middleware('auth');
+
+//TestProcesses single
+Route::get("/testsprocesses/{testsprocess}", "TestProcessesController@show")->name("testsprocesses.show")->middleware('auth');
 Route::get("/logout", "Auth\LoginController@logout")->name("logout");
