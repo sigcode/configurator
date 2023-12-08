@@ -69,6 +69,7 @@ Route::get("/tests", "TestController@index")->name("tests.index")->middleware('a
 Route::post("/tests/update", "TestController@update")->name("tests.update")->middleware('auth');
 Route::post("/tests/all", "TestController@all")->name("tests.all")->middleware('auth');
 Route::post("/tests/run", "TestController@run")->name("tests.run")->middleware('auth');
+Route::post("/tests/runTest", "TestController@runTest")->name("tests.runTest")->middleware('auth');
 Route::post("/tests/delete", "TestController@delete")->name("tests.delete")->middleware('auth');
 Route::post("/tests/flushDeploymentPath", "TestController@flushDeploymentPath")->name("tests.flushDeploymentPath")->middleware('auth');
 Route::post("/processes/delete", "TestProcessController@delete")->name("processes.delete")->middleware('auth');

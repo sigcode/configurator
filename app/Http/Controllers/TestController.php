@@ -8,6 +8,10 @@ use App\TestProcess;
 
 class TestController extends Controller
 {
+
+    const TEST_OUTPUT_DIR = "/cypress/results/";
+    const TEST_MOCHA_OUTPUT_DIR = "/mochawesome-report/";
+    const TEST_TARGET_DIR = "/bundles/";
     //index for list of Builds
     public function index()
     {
@@ -54,6 +58,96 @@ class TestController extends Controller
         $test = Test::find($request->id);
         $test->delete();
         return json_encode(['status' => 'deleted']);
+    }
+
+    public function runTest(Request $request, TestProcess $process = null)
+    {
+        $processes = $this->findRunningProcesses($request->id);
+        if ($processes->count() > 0) {
+            $this->queueProcess($request->id);
+            return json_encode(['status' => 'queued']);
+        } else if ($process != null) {
+            $test = Test::find($request->id);
+            $process->status = 'running';
+            $process->started_at = date('Y-m-d H:i:s');
+            $process->output = 'Test started at ' . $process->started_at . "\n";
+            $process->command = "";
+            $process->save();
+        } else {
+            $test = Test::find($request->id);
+            $process = new TestProcess();
+            $process->test_id = $test->id;
+            $process->status = 'running';
+            $process->started_at = date('Y-m-d H:i:s');
+            $process->output = 'Test started at ' . $process->started_at . "\n";
+            $process->command = "";
+            $process->save();
+        }
+        ini_set('max_execution_time', 0);
+        session_write_close();
+        $createFolderAndGoToIt = 'mkdir -p ' . $test->deployment_path . ' && cd ' . $test->deployment_path;
+
+        if ($test->test_command != null) {
+            $command = $createFolderAndGoToIt . ' && ' . $test->test_command;
+            $output = shell_exec($command);
+            $process->output .= $command . "\n";
+            // $process->output .= $output;
+            $process->save();
+            $this->mergeAndMargeTestResults($test, $process);
+            // $this->cleanupTests($test, $process);
+        }
+        $process->status = 'success';
+        $process->finished_at = date('Y-m-d H:i:s');
+        $process->save();
+        $this->runQueue($request->id);
+        return json_encode(['status' => 'success']);
+    }
+
+    private function mergeAndMargeTestResults($test, $process)
+    {
+        // merge cypress results
+        $command = "rm " . $test->deployment_path . self::TEST_OUTPUT_DIR . "mochawesome.json";
+        $output = shell_exec($command);
+        $process->output .= $command . "\n";
+        $process->output .= $output;
+        $process->save();
+        $command = 'npx mochawesome-merge ' . $test->deployment_path . self::TEST_OUTPUT_DIR . '*.json > ' . $test->deployment_path . self::TEST_OUTPUT_DIR . 'mochawesome.json';
+        $output = shell_exec($command);
+        $process->output .= $command . "\n";
+        $process->output .= $output;
+        $process->save();
+        // merge mocha results
+        $targetDir =  $test->deployment_path . self::TEST_TARGET_DIR . $process->id . '/';
+        //mkdir -p $targetDir
+        $command = "mkdir -p " . $targetDir;
+        $output = shell_exec($command);
+        $process->output .= $command . "\n";
+        $process->output .= $output;
+        $command = "cd " . $targetDir . ' && npx marge ' . $test->deployment_path . self::TEST_OUTPUT_DIR . 'mochawesome.json ';
+        $output = shell_exec($command);
+        $process->output .= $command . "\n";
+        $process->output .= $output;
+        $process->save();
+
+        // move bundled tests to target dir
+        // $command = 'mkdir -p ' . $test->deployment_path . self::TEST_TARGET_DIR . $test->id . '/' . ' && mv ' . $test->deployment_path . self::TEST_MOCHA_OUTPUT_DIR . ' mochawesome.html ' . $test->deployment_path . self::TEST_TARGET_DIR . $test->id . '/';
+        // $output = shell_exec($command);
+        // $process->output .= $command . "\n";
+        // $process->output .= $output;
+        $process->save();
+    }
+
+
+    private function cleanupTests($test, $process)
+    {
+        // move bundled tests to target dir
+        $command = 'mv ' . $test->deployment_path . self::TEST_MOCHA_OUTPUT_DIR . '* ' . $test->deployment_path . self::TEST_TARGET_DIR;
+        $output = shell_exec($command);
+        $process->output .= $command . "\n";
+        // remove old test results
+        $command = "rm " . $test->deployment_path . self::TEST_OUTPUT_DIR . "*";
+        $output = shell_exec($command);
+        $process->output .= $command . "\n";
     }
 
     public function run(Request $request, TestProcess $process = null)

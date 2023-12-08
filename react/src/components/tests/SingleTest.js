@@ -4,7 +4,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { getData, getProcesses, setRunningTest, updateTest } from './store/slices/TestSlice.js';
 import Moment from 'moment';
 import ConfirmDialog from '../vhosts/components/Dialog.js';
-import { DirectionsRun, Preview, WarningSharp } from '@mui/icons-material';
+import { DirectionsRun, Preview, WarningSharp, Storage } from '@mui/icons-material';
 import { Casino, Delete } from '@mui/icons-material';
 import axios from 'axios';
 import Status from './components/Status.js';
@@ -122,6 +122,16 @@ export default function SingleTest(props) {
         });
     }
 
+    const runTest = (id) => {
+        dispatch(setRunningTest(id));
+        const data = {
+            id: id,
+        };
+        axios.post('/tests/runTest', data).then((response) => {
+            // dispatch(getProcesses({ id: testId }));
+            dispatch(setRunningTest(null));
+        });
+    }
     const deleteTest = (id) => {
         const data = {
             id: id,
@@ -135,6 +145,15 @@ export default function SingleTest(props) {
         setOutput(process);
 
     }
+
+    const viewResult = (process, test) => {
+        let id = process.id;
+        const result_path = "https://" + test.deployment_path.replace("var/www/", "") + ".sguenther.codesrv.it/bundles/" + id + "/mochawesome-report/mochawesome.html";
+        window.open(result_path, '_blank');
+    }
+
+
+
 
     const deleteProcess = (id) => {
         const data = {
@@ -280,16 +299,30 @@ export default function SingleTest(props) {
                             <Button variant="contained" sx={{ marginLeft: "10px" }} onClick={() => reCheckTest()}>Recheck Test Status</Button>
                         </>
                         :
-                        <ConfirmDialog
-                            startIcon={<DirectionsRun />}
-                            color="secondary"
-                            sx={{ marginLeft: "10px" }}
-                            buttonText="Run new Test"
-                            title=""
-                            variant="contained"
+                        <div class="flex flex-row">
+                            <ConfirmDialog
+                                startIcon={<Storage />}
+                                color="secondary"
+                                sx={{ marginLeft: "10px" }}
+                                buttonText="Run Test Deployment"
+                                title=""
+                                variant="contained"
 
-                            content="Start new test?"
-                            confirm={() => run(test.id)} />}
+                                content="Start Deployment?"
+                                confirm={() => run(test.id)} />
+
+                            <ConfirmDialog
+                                startIcon={<DirectionsRun />}
+                                color="secondary"
+                                sx={{ marginLeft: "10px" }}
+                                buttonText="Run Test"
+                                title=""
+                                variant="contained"
+
+                                content="Start Test?"
+                                confirm={() => runTest(test.id)} />
+
+                        </div>}
 
                     <div className="flex flex-row mx-5 my-5">
                         <>
@@ -323,7 +356,11 @@ export default function SingleTest(props) {
                                                             <Button
                                                                 sx={{ marginLeft: "10px" }}
                                                                 startIcon={<Preview />}
-                                                                size="small" variant="contained" onClick={() => viewOutput(process.output)}>View</Button>
+                                                                size="small" variant="contained" onClick={() => viewOutput(process.output)}>Log</Button>
+                                                            <Button
+                                                                sx={{ marginLeft: "10px" }}
+                                                                startIcon={<Preview />}
+                                                                size="small" variant="contained" onClick={() => viewResult(process, test)}> Result</Button>
                                                             <ConfirmDialog
                                                                 startIcon={<Delete />}
                                                                 color="error"
