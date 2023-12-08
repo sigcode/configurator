@@ -94,13 +94,28 @@ class TestController extends Controller
             // $process->output .= $output;
             $process->save();
             $this->mergeAndMargeTestResults($test, $process);
-            // $this->cleanupTests($test, $process);
+            $this->cleanupTests($test, $process);
+            $this->sendMailwithTestReportUrl($test, $process);
         }
         $process->status = 'success';
         $process->finished_at = date('Y-m-d H:i:s');
         $process->save();
         $this->runQueue($request->id);
         return json_encode(['status' => 'success']);
+    }
+
+    private function sendMailwithTestReportUrl($test, $process)
+    {
+        $process_id = $process->id;
+        $deployment_path = $test->deployment_path;
+        $url = "https://" . preg_replace("/\/var\/www\//", "", $deployment_path) . ".sguenther.codesrv.it/bundles/" . $process_id . "/mochawesome-report/mochawesome.html";
+        $to = "simon.guenther@sucurema.com";
+        $subject = 'Test Report for ' . $test->repo_name;
+        $message = 'Test Report for ' . $test->repo_name . ' is available at ' . $url;
+        $headers = "From: admin@test.sguenther.codesrv.it\r\n" .
+            "Reply-To: admin@test.sguenther.codesrv.it\r\n" .
+            "X-Mailer: PHP/" . phpversion();
+        mail($to, $subject, $message, $headers);
     }
 
     private function mergeAndMargeTestResults($test, $process)
@@ -140,12 +155,8 @@ class TestController extends Controller
 
     private function cleanupTests($test, $process)
     {
-        // move bundled tests to target dir
-        $command = 'mv ' . $test->deployment_path . self::TEST_MOCHA_OUTPUT_DIR . '* ' . $test->deployment_path . self::TEST_TARGET_DIR;
-        $output = shell_exec($command);
-        $process->output .= $command . "\n";
         // remove old test results
-        $command = "rm " . $test->deployment_path . self::TEST_OUTPUT_DIR . "*";
+        $command = "rm " . $test->deployment_path . self::TEST_OUTPUT_DIR . "*.json";
         $output = shell_exec($command);
         $process->output .= $command . "\n";
     }
@@ -207,7 +218,7 @@ class TestController extends Controller
             $process->save();
         }
         if ($test->post_command != null) {
-            $command =  $test->post_command;
+            $command = $createFolderAndGoToIt . ' && ' . $test->post_command;
             $output = shell_exec($command);
             $process->output .= $command . "\n";
             $process->output .= $output;
