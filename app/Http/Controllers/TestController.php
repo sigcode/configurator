@@ -109,11 +109,11 @@ class TestController extends Controller
         $process_id = $process->id;
         $deployment_path = $test->deployment_path;
         $url = "https://" . preg_replace("/\/var\/www\//", "", $deployment_path) . ".sguenther.codesrv.it/bundles/" . $process_id . "/mochawesome-report/mochawesome.html";
-        $to = "simon.guenther@sucurema.com";
+        $to = "simon.guenther@sucurema.com,marvin.panzof@sucurema.com,khadija.hamrerrass@sucurema.com";
         $subject = 'Test Report for ' . $test->repo_name;
         $message = 'Test Report for ' . $test->repo_name . ' is available at ' . $url;
-        $headers = "From: admin@test.sguenther.codesrv.it\r\n" .
-            "Reply-To: admin@test.sguenther.codesrv.it\r\n" .
+        $headers = "From: admin@sucv.de\r\n" .
+            "Reply-To: admin@sucv.de\r\n" .
             "X-Mailer: PHP/" . phpversion();
         mail($to, $subject, $message, $headers);
     }
