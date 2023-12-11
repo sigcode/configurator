@@ -148,7 +148,9 @@ export default function SingleTest(props) {
 
     const viewResult = (process, test) => {
         let id = process.id;
-        const result_path = "https://" + test.deployment_path.replace("var/www/", "") + ".sguenther.codesrv.it/bundles/" + id + "/mochawesome-report/mochawesome.html";
+        const host = window.location.hostname;
+        urlhost = host.replace("conf.", "");
+        const result_path = "https://" + test.deployment_path.replace("var/www/", "") + "." + urlhost + "/bundles/" + id + "/mochawesome-report/mochawesome.html";
         window.open(result_path, '_blank');
     }
 

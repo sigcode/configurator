@@ -108,7 +108,9 @@ class TestController extends Controller
     {
         $process_id = $process->id;
         $deployment_path = $test->deployment_path;
-        $url = "https://" . preg_replace("/\/var\/www\//", "", $deployment_path) . ".sguenther.codesrv.it/bundles/" . $process_id . "/mochawesome-report/mochawesome.html";
+        $host = $_SERVER['SERVER_NAME'];
+        $host = preg_replace("/^conf\./", "", $host);
+        $url = "https://" . preg_replace("/\/var\/www\//", "", $deployment_path) . ".$host/bundles/" . $process_id . "/mochawesome-report/mochawesome.html";
         $to = "simon.guenther@sucurema.com,marvin.panzof@sucurema.com,khadija.hamrerrass@sucurema.com";
         $subject = 'Test Report for ' . $test->repo_name;
         $message = 'Test Report for ' . $test->repo_name . ' is available at ' . $url;
