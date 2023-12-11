@@ -264,6 +264,18 @@ class TestController extends Controller
         return $processes;
     }
 
+    public function testhook(Request $request)
+    {
+        $test = Test::where('test_key', $request->key);
+        if ($test->count() > 0) {
+            $test = $test->first();
+            $request->id = $test->id;
+            $this->runTest($request);
+            return json_encode(['status' => 'running']);
+        } else {
+            return json_encode(['status' => 'error']);
+        }
+    }
 
     public function hook(Request $request)
     {
