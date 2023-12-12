@@ -15,7 +15,7 @@ class TestProcess extends Model
      * @var array
      */
     protected $fillable = [
-        'test_id', 'command', 'output', 'status', 'started_at', 'finished_at',
+        'test_id', 'command', 'output', 'status', 'started_at', 'finished_at', 'type'
     ];
 
 

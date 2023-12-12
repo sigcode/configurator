@@ -15,7 +15,7 @@ class Test extends Model
      * @var array
      */
     protected $fillable = [
-        'repo_name', 'repo_url', 'repo_branch', 'deployment_path',  'post_command', 'test_key', "test_command"
+        'repo_name', 'repo_url', 'repo_branch', 'deployment_path',  'post_command', 'test_key', "test_command", "mails"
     ];
 
     public function testProcesses()

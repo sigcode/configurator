@@ -33,6 +33,7 @@ export default function SingleTest(props) {
     const repo_name_ref = useRef();
     const repo_url_ref = useRef();
     const repo_branch_ref = useRef();
+    const mails_ref = useRef();
     const deployment_path_ref = useRef();
     const test_key_ref = useRef();
     const post_command_ref = useRef();
@@ -81,6 +82,7 @@ export default function SingleTest(props) {
             id: test.id,
             repo_name: repo_name_ref.current.value,
             repo_url: repo_url_ref.current.value,
+            mails: mails_ref.current.value,
             repo_branch: repo_branch_ref.current.value,
             deployment_path: deployment_path_ref.current.value,
             test_key: test_key_ref.current.value,
@@ -197,6 +199,11 @@ export default function SingleTest(props) {
                 <div className="flex flex-row my-5">
                     <FormControl fullWidth sx={{ m: 1 }}>
                         <TextField id="branch" label="Test Branch" name="repo_branch" defaultValue={test.repo_branch} inputRef={repo_branch_ref} />
+                    </FormControl>
+                </div>
+                <div className="flex flex-row my-5">
+                    <FormControl fullWidth sx={{ m: 1 }}>
+                        <TextField id="mails" label="Mail Recievers (,)" name="mails" defaultValue={test.mails} inputRef={mails_ref} />
                     </FormControl>
                 </div>
                 <div className="flex flex-row my-5">
@@ -337,6 +344,7 @@ export default function SingleTest(props) {
                                             <StyledTableCell >Started</StyledTableCell>
                                             <StyledTableCell >Finished</StyledTableCell>
                                             <StyledTableCell >Duration</StyledTableCell>
+                                            <StyledTableCell >Type</StyledTableCell>
                                             <StyledTableCell >Actions</StyledTableCell>
                                         </TableRow>
                                     </TableHead>
@@ -353,16 +361,20 @@ export default function SingleTest(props) {
 
                                                     <td className="border px-4 py-2">{process.finished_at !== null ? Moment(process.finished_at).format('DD.MM.YYYY HH:mm:ss') : ""}</td>
                                                     <td className="border px-4 py-2">{process.finished_at !== null ? (duration.asMinutes()).toFixed(2) + " Minutes" : ""} </td>
+                                                    <td className="border px-4 py-2">{process.type == 0 ? "Deployment" : "Test"}</td>
                                                     <td className="border px-4 py-2">
                                                         <Stack direction="column" spacing={2}>
                                                             <Button
                                                                 sx={{ marginLeft: "10px" }}
                                                                 startIcon={<Preview />}
                                                                 size="small" variant="contained" onClick={() => viewOutput(process.output)}>Log</Button>
-                                                            <Button
-                                                                sx={{ marginLeft: "10px" }}
-                                                                startIcon={<Preview />}
-                                                                size="small" variant="contained" onClick={() => viewResult(process, test)}> Result</Button>
+                                                            {process.type == 1 &&
+                                                                <Button
+                                                                    sx={{ marginLeft: "10px" }}
+                                                                    startIcon={<Preview />}
+                                                                    color="secondary"
+                                                                    size="small" variant="contained" onClick={() => viewResult(process, test)}> Result</Button>
+                                                            }
                                                             <ConfirmDialog
                                                                 startIcon={<Delete />}
                                                                 color="error"

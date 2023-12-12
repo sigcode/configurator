@@ -37,6 +37,7 @@ class TestController extends Controller
         }
         $test->repo_name = $request->repo_name == null ? '' : $request->repo_name;
         $test->repo_url = $request->repo_url == null ? '' : $request->repo_url;
+        $test->mails = $request->mails == null ? '' : $request->mails;
         $test->repo_branch = $request->repo_branch == null ? 'master' : $request->repo_branch;
         $test->deployment_path = $request->deployment_path == null ? '' : $request->deployment_path;
         $test->test_key = $request->test_key == null ? '' : $request->test_key;
@@ -72,6 +73,7 @@ class TestController extends Controller
             $process->started_at = date('Y-m-d H:i:s');
             $process->output = 'Test started at ' . $process->started_at . "\n";
             $process->command = "";
+            $process->type = 1;
             $process->save();
         } else {
             $test = Test::find($request->id);
@@ -81,6 +83,7 @@ class TestController extends Controller
             $process->started_at = date('Y-m-d H:i:s');
             $process->output = 'Test started at ' . $process->started_at . "\n";
             $process->command = "";
+            $process->type = 1;
             $process->save();
         }
         ini_set('max_execution_time', 0);
@@ -111,7 +114,7 @@ class TestController extends Controller
         $host = $_SERVER['SERVER_NAME'];
         $host = preg_replace("/^conf\./", "", $host);
         $url = "https://" . preg_replace("/\/var\/www\//", "", $deployment_path) . ".$host/bundles/" . $process_id . "/mochawesome-report/mochawesome.html";
-        $to = "simon.guenther@sucurema.com,marvin.panzof@sucurema.com,khadija.hamrerrass@sucurema.com";
+        $to = $test->mails;
         $subject = 'Test Report for ' . $test->repo_name;
         $message = 'Test Report for ' . $test->repo_name . ' is available at ' . $url;
         $headers = "From: admin@sucv.de\r\n" .
@@ -175,6 +178,7 @@ class TestController extends Controller
             $process->started_at = date('Y-m-d H:i:s');
             $process->output = 'Test started at ' . $process->started_at . "\n";
             $process->command = "";
+            $process->type = 0;
             $process->save();
         } else {
             $test = Test::find($request->id);
@@ -184,6 +188,7 @@ class TestController extends Controller
             $process->started_at = date('Y-m-d H:i:s');
             $process->output = 'Test started at ' . $process->started_at . "\n";
             $process->command = "";
+            $process->type = 0;
             $process->save();
         }
         ini_set('max_execution_time', 0);
@@ -197,7 +202,7 @@ class TestController extends Controller
         $process->save();
 
         $cloneRepo = 'git clone ' . $test->repo_url . ' .';
-        $pullAndCheckoutBranch = 'git pull && git checkout ' . $test->repo_branch;
+        $pullAndCheckoutBranch = 'git stash &&  git pull && git checkout ' . $test->repo_branch;
 
         if ($output == "true\n") {
             $command = $createFolderAndGoToIt . ' && ' . $pullAndCheckoutBranch;
