@@ -1,15 +1,22 @@
-import React, { useEffect, useRef } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import VhostList from './vhlist.js';
-import Button from '@mui/material/Button';
-import Switch from '@mui/material/Switch';
-import { getData, getPHPVersion, apacheCtl, variousAjax, setPHPVersionChanged, setForceReload } from './store/slices/VhostSlice.js';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import ChildModal from './components/Modal.js';
-import { Input, TextField } from '@mui/material';
-import { create } from '@mui/material/styles/createTransitions.js';
-import { createVoid } from 'typescript';
-import Paper from '@mui/material/Paper';
+import React, { useEffect, useRef } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import VhostList from "./vhlist.js";
+import Button from "@mui/material/Button";
+import Switch from "@mui/material/Switch";
+import {
+    getData,
+    getPHPVersion,
+    apacheCtl,
+    variousAjax,
+    setPHPVersionChanged,
+    setForceReload
+} from "./store/slices/VhostSlice.js";
+import FormControlLabel from "@mui/material/FormControlLabel";
+import ChildModal from "./components/Modal.js";
+import { Input, TextField } from "@mui/material";
+import { create } from "@mui/material/styles/createTransitions.js";
+import { createVoid } from "typescript";
+import Paper from "@mui/material/Paper";
 export default function Vhosts() {
     const dispatch = useDispatch();
     const vhostNameRef = useRef();
@@ -19,7 +26,9 @@ export default function Vhosts() {
     }, []);
     const phpversion = useSelector((state) => state.Vhost.phpversion);
     const consoleContent = useSelector((state) => state.Vhost.consoleContent);
-    const changedPHPVersion = useSelector((state) => state.Vhost.changedPHPVersion);
+    const changedPHPVersion = useSelector(
+        (state) => state.Vhost.changedPHPVersion
+    );
     const forceReload = useSelector((state) => state.Vhost.forceReload);
     if (forceReload) {
         dispatch(getData());
@@ -33,16 +42,15 @@ export default function Vhosts() {
         }, 1000);
     }
 
-
     const configtest = () => {
-        dispatch(apacheCtl({ command: "configtest" }))
+        dispatch(apacheCtl({ command: "configtest" }));
     };
     const restartApache = () => {
-        dispatch(apacheCtl({ command: "restart" }))
+        dispatch(apacheCtl({ command: "restart" }));
     };
 
     const changePHPVersion = (version) => {
-        dispatch(variousAjax({ type: "changePHPVersion", version: version }))
+        dispatch(variousAjax({ type: "changePHPVersion", version: version }));
     };
 
     const createVhost = () => {
@@ -51,14 +59,12 @@ export default function Vhosts() {
         if (!vhostName.includes(".conf")) {
             vhostName = vhostName + ".conf";
         }
-        dispatch(variousAjax({ type: "addVhost", name: vhostName }))
+        dispatch(variousAjax({ type: "addVhost", name: vhostName }));
     };
     return (
         <div class="grid grid-cols-2 gap-4">
             <div class="left mt-10">
-                <h1 class=" text-gray-700">
-                    Vhosts Available:
-                </h1>
+                <h1 class=" text-gray-700">Vhosts Available:</h1>
                 <hr />
                 <ChildModal
                     variant="contained"
@@ -68,20 +74,31 @@ export default function Vhosts() {
                     content={
                         <>
                             <div class="flex flex-row">
-                                <TextField id="vhostName" label="VHost Name" variant="standard" inputRef={vhostNameRef} />
+                                <TextField
+                                    id="vhostName"
+                                    label="VHost Name"
+                                    variant="standard"
+                                    inputRef={vhostNameRef}
+                                />
                             </div>
                             <div class="flex flex-row mt-4">
-                                .conf ending is not required - it will be added automatically
+                                .conf ending is not required - it will be added
+                                automatically
                             </div>
                             <div class="flex flex-row mt-4">
-                                <Button variant="contained" color="tertiary" onClick={() => createVhost()} >
+                                <Button
+                                    variant="contained"
+                                    color="tertiary"
+                                    onClick={() => createVhost()}
+                                >
                                     Create Vhost
                                 </Button>
                             </div>
                         </>
                     }
                     sx={{
-                        marginBottom: "50px", marginTop: "20px"
+                        marginBottom: "50px",
+                        marginTop: "20px"
                     }}
                 />
                 <VhostList />
@@ -89,34 +106,69 @@ export default function Vhosts() {
             <div class="right">
                 <div class="text-lg text-gray-700">
                     <div class="flex flex-row">
-                        <Button variant="contained" color="secondary" onClick={() => restartApache()}
-                            sx={{ marginRight: "100px" }}>
+                        <Button
+                            variant="contained"
+                            color="secondary"
+                            onClick={() => restartApache()}
+                            sx={{ marginRight: "100px" }}
+                        >
                             Restart Apache
                         </Button>
-                        <Button variant="contained" color="primary" onClick={() => configtest()}>
+                        <Button
+                            variant="contained"
+                            color="primary"
+                            onClick={() => configtest()}
+                        >
                             Apache Configtest
                         </Button>
                     </div>
                     <div class="flex flex-row mt-4">
-                        <FormControlLabel control={
-                            <Switch checked={"7.4" == phpversion} onClick={() => changePHPVersion("74")} />
-                        } label="PHP 7.4" className="basis-1/3" />
-                        <FormControlLabel control={
-                            <Switch checked={"8.0" == phpversion} onClick={() => changePHPVersion("80")} />
-                        } label="PHP 8.0" className="basis-1/3" />
-                        <FormControlLabel control={
-                            <Switch checked={"8.1" == phpversion} onClick={() => changePHPVersion("81")} />
-                        } label="PHP 8.1" className="basis-1/3" />
+                        <FormControlLabel
+                            control={
+                                <Switch
+                                    checked={"7.4" == phpversion}
+                                    onClick={() => changePHPVersion("74")}
+                                />
+                            }
+                            label="PHP 7.4"
+                            className="basis-1/3"
+                        />
+                        <FormControlLabel
+                            control={
+                                <Switch
+                                    checked={"8.1" == phpversion}
+                                    onClick={() => changePHPVersion("81")}
+                                />
+                            }
+                            label="PHP 8.1"
+                            className="basis-1/3"
+                        />
+                        <FormControlLabel
+                            control={
+                                <Switch
+                                    checked={"8.3" == phpversion}
+                                    onClick={() => changePHPVersion("83")}
+                                />
+                            }
+                            label="PHP 8.3"
+                            className="basis-1/3"
+                        />
                     </div>
-                    <Paper elevation={1} className=" text-white p-3  w-full " style={{ height: "500px" }} >
-                        <pre className="break-words overflow-y-auto" style={{ whiteSpace: 'pre-wrap', wordWrap: 'break-word' }}>
-                            <code>
-                                {consoleContent}
-                            </code>
+                    <Paper
+                        elevation={1}
+                        className=" text-white p-3  w-full "
+                        style={{ height: "500px" }}
+                    >
+                        <pre
+                            className="break-words overflow-y-auto"
+                            style={{
+                                whiteSpace: "pre-wrap",
+                                wordWrap: "break-word"
+                            }}
+                        >
+                            <code>{consoleContent}</code>
                         </pre>
-
                     </Paper>
-
                 </div>
             </div>
         </div>

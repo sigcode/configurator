@@ -196,10 +196,11 @@ class VhostcliController extends Controller
             //put dot between 7 and 2
             $version = substr($version, 0, 1) . "." . substr($version, 1, 1);
             $mod = "php" . $version;
+            var_dump($mod);
             //check if mod is installed
             $cmd = "a2query -m $mod 2>&1";
             $out = shell_exec($cmd);
-            if (!preg_match("/disabled by/", $out)) {
+            if (false && !preg_match("/disabled by/", $out)) {
                 return "PHP $version is not installed \n";
             } else {
                 switch ($version) {
@@ -232,6 +233,16 @@ class VhostcliController extends Controller
                         $out .= shell_exec($cmd);
                         $cmd = "sudo service apache2 reload";
                         $out .= "Reloaded Apache2 with PHP 8.1";
+                        $out .= shell_exec($cmd);
+                        break;
+                    case "8.3":
+                        $insert = "8.3";
+                        $cmd = "sudo a2dismod php8.1 php7.4 php8.0";
+                        $out = shell_exec($cmd);
+                        $cmd = "sudo a2enmod php8.3";
+                        $out .= shell_exec($cmd);
+                        $cmd = "sudo service apache2 reload";
+                        $out .= "Reloaded Apache2 with PHP 8.3";
                         $out .= shell_exec($cmd);
                         break;
                 }
