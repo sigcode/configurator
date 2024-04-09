@@ -237,7 +237,7 @@ class VhostcliController extends Controller
                         break;
                     case "8.3":
                         $insert = "8.3";
-                        $cmd = "sudo a2dismod php8.1 php7.4 php8.0";
+                        $cmd = "sudo a2dismod php8.1 php7.4 php8.3 php8.0";
                         $out = shell_exec($cmd);
                         $cmd = "sudo a2enmod php8.3";
                         $out .= shell_exec($cmd);

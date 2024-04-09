@@ -8,7 +8,7 @@
             <button class="ui button " style="background-color: rgb(27, 166, 137)" onclick="vhosts.apacheStart()">Start</button>
             <!-- <button class="ui button red" onclick="vhosts.apacheStop()">Stop</button>-->
         </div>
-        <div class="bg-slate-600 text-white p-3 overflow-scroll leftDashboard preWrapped mt-2">
+        <div class="bg-slate-600 text-black p-3 overflow-scroll leftDashboard preWrapped mt-2 border border-1 border-slate-200 ">
         </div>
     </div>
     <div class="7 wide column">
@@ -19,7 +19,7 @@
             <button class="ui button " style="background-color: rgb(27, 166, 137)" onclick="vhosts.codeserverStart()">Start</button>
             <button class="ui button red" onclick="vhosts.codeserverStop()">Stop</button>
         </div>
-        <div class="rightDashboard bg-slate-600 text-white p-3 overflow-scroll preWrapped mt-2"></div>
+        <div class="rightDashboard bg-slate-600 text-black p-3 overflow-scroll preWrapped mt-2 border border-1 border-slate-200 "></div>
     </div>
     <div class="7 wide column">
         <h1>MySQL Status: <span class="mysqlState"><i class="play  circle icon"></i></span></h1>
@@ -29,7 +29,7 @@
             <button class="ui button red" onclick="vhosts.confAll()">Stop</button>
         </div>
         <div class></div>
-        <div class="leftDashboardSecond preWrapped  bg-slate-600 text-white p-3 overflow-scroll mt-2"></div>
+        <div class="leftDashboardSecond preWrapped  bg-slate-600 text-black p-3 overflow-scroll mt-2 border border-1 border-slate-200 "></div>
     </div>
     <!--
     <div class="7 wide column">
